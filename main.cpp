@@ -99,7 +99,7 @@ int last_time = clock();
 int comecaJogo();
 int Tutorial();
 int Menu();
-int Conclusao();
+int Conclusao(Final final);
 
 //Funções do jogo
 
@@ -152,12 +152,10 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
    	for (int i = 0; i < qtdLinhas;i++) {
    		setfillstyle(1,RGB(0,0,0));
 		
-   		
-		
    		for(int l = 0; l < qtdLetras;){
+   			
    			if(linha[i][l] != '\0'){
-//   				if(pg == 1) pg = 2; else pg = 1;
-//   				setvisualpage(pg);
+   				
 				newStr[l] = linha[i][l];
 				newStr[l+1] = '\0';
 				outtextxy(pos_x ,pos_y + (i*alturaString),newStr);
@@ -165,9 +163,12 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 				printf("total letras:%d, letra atual:%d\n", qtdLetras, l);
 				setactivepage(pg);
 				l++;
+				
 			} else {
+				
 				mciSendString("stop Teclado", NULL, 0, 0);
 				return;
+				
 			}
 		}
         outtextxy(pos_x, pos_y + (i*alturaString), linha[i]);
@@ -215,11 +216,11 @@ void apaga_item(Item **item_ref) {
 
 ItensVetor *criar_vetor_itens(int capacidade){
 	ItensVetor *vec = (ItensVetor*) calloc(1,sizeof(ItensVetor));
-	
+
 	vec->tamanho = 0;
 	vec->capacidade = capacidade;
 	vec->itens = (Item*) calloc(capacidade,sizeof(Item));
-	
+
 	return vec;
 }
 
@@ -248,6 +249,31 @@ void append_vetor_itens(ItensVetor *vec, Item *item){
 	vec->itens[vec->tamanho] = *item;
 
 	vec->tamanho++;
+}
+
+void compara_vetor_itens(Final final,const ItensVetor *vec_inventario){
+	int count = 0;
+	
+	ItensVetor *vec_final = final.itens;
+	
+	for(int i = 0;i < vec_final->tamanho;i++){
+		Item item_final = vec_final->itens[i];
+		for(int j = 0;j < vec_inventario->tamanho; j++){
+			Item item_inventario = vec_inventario->itens[j];
+			if(item_final.id == item_inventario.id){
+				count++;
+				printf("item existe no final\n");
+			} else {
+				printf("item nao existe nesse final\n");
+			}
+		}
+	}
+	if(count == 2){
+		Conclusao(final);
+	} else {
+		printf("esse final não combina:%d\n", final.id);
+	}
+	return;
 }
 
 void remove_item_vetor(ItensVetor *vec,Item *item){
@@ -346,6 +372,8 @@ FinaisVetor *criar_vetor_finais(int capacidade){
 }
 
 void print_vetor_finais(FinaisVetor *vec){
+	printf("entrou na funcao");
+	printf("tamanho: %d", vec->tamanho);
 	for(int i = 0;i < vec->tamanho;i++){
 		printf("final:%s, indice:%d\n",vec->finais[i].descricao,i);
 	}
@@ -494,11 +522,24 @@ void mostrarBotoes(const BotoesVetor *botoes) {
 }
 
 void mostraTempo(int tempo){
+	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
+	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
+	
+	
+	waveOutSetVolume(0,0xFFFFFFFF);
+	
+	bool chamou1;
+	bool chamou2;
+	bool chamou3;
+	bool chamou4;
 	
 	int last_time = GetTickCount();
 	char str[20];
 	int tempo_limite = 15;
 	int segundos = (last_time - tempo)/1000;
+	float milisegundos = (last_time - tempo);
+	int count = 0;
+	int gt2 = GetTickCount();
 	
 	if(segundos > 15) {
 		segundos = 15;
@@ -511,6 +552,20 @@ void mostraTempo(int tempo){
 
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,2);
 	
+}
+
+void executaSom(unsigned long long int *ts1){
+	unsigned long long int ts2 = GetTickCount();
+	mciSendString("open .\\Audios\\Porta2.mp3 type MPEGVideo alias Porta", NULL, 0, 0);
+	waveOutSetVolume(0,0xFFFFFFFF);
+	printf("%d\n", ts2-*ts1);
+	
+	if((ts2 - *ts1) == 5000 ){
+		*ts1 = GetTickCount();
+		printf("chamou som : %d\n",(ts2 - *ts1));
+		mciSendString("seek Porta to start", NULL, 0, 0);
+		mciSendString("play Porta", NULL, 0, 0);
+	}
 }
 
 void mostrarBotao(const Botao *botao) {
@@ -647,8 +702,15 @@ void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
 			delay(50);
 			
     		if(GetKeyState(VK_LBUTTON)&0x80){
-    			printf("clicou");
-    			printf("clicou na saida:%s\n", saida->nome);
+    			
+    			printf("clicou na saida 123:%s\n", saida->nome);
+    			
+    			print_vetor_finais(camera.saida->finais);
+    			
+    			for(int i = 0;i< saida->finais->tamanho; i++){
+    				compara_vetor_itens(saida->finais->finais[i],inventario->itens);
+				}
+    			
 				delay(500);	
 			}	
 		}	
@@ -672,9 +734,9 @@ void mudarDeCamera(int *camera_atual,int *tecla) {
 	} 
 }
 
-int gt1 = GetTickCount();
+unsigned long long int gt1 = GetTickCount();
 
-int Conclusao() {
+int Conclusao(Final final) {
 	int count = 0;
 	
 	mciSendString("stop Insetos", NULL, 0, 0);
@@ -683,9 +745,9 @@ int Conclusao() {
 	
 	int LarTela;
 	LarTela = 1100;
-	int gt2;
+	unsigned long long int gt2;
 	
-	char *texto = "Você continua a procurar pistas e descobre que a chave do carro que você usou para chegar até a cabana está desaparecida. Sem a chave, você não conseguirá sair dali. De repente, você escuta um som estranho vindo de um dos quartos. Quando entra, vê que a chave do carro está em cima da cama. Ao tentar sair da cabana, você percebe que algo está bloqueando a porta. Então, decide usar o galão de gasolina e o fósforo para criar uma distração e fugir. Depois de algumas tentativas, você finalmente consegue. Quando olha para trás, vê a cabana em chamas e percebe que não estava sozinho ali.";
+	char *texto = final.historia;
 	
 
 	
@@ -711,8 +773,9 @@ int Conclusao() {
 }
 
 int comecaJogo(){
-	int tempo = GetTickCount();
-	int gt2;
+	unsigned long long int tempo = GetTickCount();
+	unsigned long long int gt2;
+	unsigned long long int ts1 = GetTickCount();
     int tecla = 0;
 	int camera_atual = 0;
 	int qtdCam = 0;
@@ -771,10 +834,10 @@ int comecaJogo(){
 	saida0->finais = criar_vetor_finais(6);
 	saida1->finais = criar_vetor_finais(6);
 	
-	append_vetor_finais(saida0->finais,final0);
-	append_vetor_finais(saida0->finais,final1);
-	append_vetor_finais(saida0->finais,final2);
-	append_vetor_finais(saida0->finais,final3);
+	append_vetor_finais(saida1->finais,final0);
+	append_vetor_finais(saida1->finais,final1);
+	append_vetor_finais(saida1->finais,final2);
+	append_vetor_finais(saida1->finais,final3);
 	
 	print_vetor_finais(saida0->finais);
 	
@@ -815,6 +878,8 @@ int comecaJogo(){
 	append_vetor_itens(cameras[1].itens,dinamite5);
 	append_vetor_itens(cameras[3].itens,dinamite6);
 	
+	print_vetor_finais(saida0->finais);
+	
  	while(true) {
  		gt2 = GetTickCount();
  		
@@ -832,12 +897,12 @@ int comecaJogo(){
 			mostrarItensInventario(inventario);
 			mostrarSaidasCamera(&cameras[camera_atual]);
 			mostraTempo(tempo);
-			
+			executaSom(&ts1);
 			colisaoMouseItens(cameras[camera_atual],inventario);
 			colisaoMouseSaidas(cameras[camera_atual],inventario);
 			
-			if(((gt2 - tempo) /1000) > 2) {
-				Conclusao();
+			if(((gt2 - tempo) /1000) > 15) {
+				Conclusao(*(final0));
 			}
 			
  			setactivepage(pg);
@@ -885,7 +950,7 @@ int Tutorial(){
 	
 //	Botao *botao_voltar = criar_botao("voltar",0,0,30,AltTela - 50,100,50);
 	
-	int gt2;
+	unsigned long long int gt2;
 	
 	while(true){
 		
@@ -942,7 +1007,7 @@ int Menu(){
 
     void *img_menu = load_image("HorrorHut.bmp",LarTela,AltTela,0,0);
 
-	int gt2;
+	unsigned long long int gt2;
 	
 	POINT P;
 	HWND janela;
