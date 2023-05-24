@@ -8,6 +8,8 @@
 #include <math.h>
 #include <string.h>
 
+#define QtdCenas  82
+
 //STRUCTS
 
 struct TMouse{
@@ -100,6 +102,7 @@ int comecaJogo();
 int Tutorial();
 int Menu();
 int Conclusao(Final final);
+int animacao_porta();
 
 //Funções do jogo
 
@@ -646,6 +649,8 @@ void colisaoMouseBotao(BotoesVetor* botoes){
 					Menu();
 				}  else if (botao.nome == "sair") {
 					delay(200);
+					mciSendString("stop Tema", NULL, 0, 0);
+					animacao_porta();
 					printf("clicou no sair\n");
 				}
 			}
@@ -736,6 +741,199 @@ void mudarDeCamera(int *camera_atual,int *tecla) {
 
 unsigned long long int gt1 = GetTickCount();
 
+int animacao_porta()  { 
+  int pg, Porta, i, um = 1, xt = 0;
+  //delay(4000);
+  void **t;                                         
+  t = (void **)malloc(sizeof(void *) * QtdCenas);  
+  
+  Porta = imagesize(0, 0, 1280,720);	
+
+  mciSendString("stop Insetos", NULL, 0, 0);
+
+  for(i = 0; i < QtdCenas; i++)  
+    t[i] = malloc(Porta);
+    
+	i = 0;
+    readimagefile(".\\Animacao\\K_0001.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[0]);
+    readimagefile(".\\Animacao\\K_0002.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[1]);
+    readimagefile(".\\Animacao\\K_0003.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[2]);
+    readimagefile(".\\Animacao\\K_0004.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[3]);
+    readimagefile(".\\Animacao\\K_0005.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[4]);
+    readimagefile(".\\Animacao\\K_0006.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[5]);
+    readimagefile(".\\Animacao\\K_0007.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[6]);
+    readimagefile(".\\Animacao\\K_0008.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[7]);
+    readimagefile(".\\Animacao\\K_0009.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[8]);
+    readimagefile(".\\Animacao\\K_0010.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[9]);
+    readimagefile(".\\Animacao\\K_0011.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[10]);
+    readimagefile(".\\Animacao\\K_0012.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[11]);
+    readimagefile(".\\Animacao\\K_0013.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[12]);
+    readimagefile(".\\Animacao\\K_0014.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[13]);
+    readimagefile(".\\Animacao\\K_0015.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[14]);
+    readimagefile(".\\Animacao\\K_0016.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[15]);
+    readimagefile(".\\Animacao\\K_0017.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[16]);
+    readimagefile(".\\Animacao\\K_0018.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[17]);
+    readimagefile(".\\Animacao\\K_0019.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[18]);
+    readimagefile(".\\Animacao\\K_0020.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[19]);
+    readimagefile(".\\Animacao\\K_0021.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[20]);
+    readimagefile(".\\Animacao\\K_0022.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[21]);
+    readimagefile(".\\Animacao\\K_0023.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[22]);
+    readimagefile(".\\Animacao\\K_0024.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[23]);
+    readimagefile(".\\Animacao\\K_0025.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[24]);
+    readimagefile(".\\Animacao\\K_0026.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[25]);
+    readimagefile(".\\Animacao\\K_0027.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[26]);
+    readimagefile(".\\Animacao\\K_0028.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[27]);
+    readimagefile(".\\Animacao\\K_0029.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[28]);
+    readimagefile(".\\Animacao\\K_0030.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[29]);
+    readimagefile(".\\Animacao\\K_0031.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[30]);
+    readimagefile(".\\Animacao\\K_0032.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[31]);
+    readimagefile(".\\Animacao\\K_0033.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[32]);
+    readimagefile(".\\Animacao\\K_0034.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[33]);
+    readimagefile(".\\Animacao\\K_0035.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[34]);
+    readimagefile(".\\Animacao\\K_0036.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[35]);
+    readimagefile(".\\Animacao\\K_0037.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[36]);
+    readimagefile(".\\Animacao\\K_0038.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[37]);
+    readimagefile(".\\Animacao\\K_0039.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[38]);
+    readimagefile(".\\Animacao\\K_0040.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[39]);
+    readimagefile(".\\Animacao\\K_0041.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[40]);
+    readimagefile(".\\Animacao\\K_0042.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[41]);
+    readimagefile(".\\Animacao\\K_0043.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[42]);
+    readimagefile(".\\Animacao\\K_0044.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[43]);
+    readimagefile(".\\Animacao\\K_0045.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[44]);
+    readimagefile(".\\Animacao\\K_0046.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[45]);
+    readimagefile(".\\Animacao\\K_0047.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[46]);
+    readimagefile(".\\Animacao\\K_0048.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[47]);
+    readimagefile(".\\Animacao\\K_0049.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[48]);
+    readimagefile(".\\Animacao\\K_0050.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[49]);
+    readimagefile(".\\Animacao\\K_0051.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[50]);
+    readimagefile(".\\Animacao\\K_0052.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[51]);
+    readimagefile(".\\Animacao\\K_0053.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[52]);
+    readimagefile(".\\Animacao\\K_0054.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[53]);
+    readimagefile(".\\Animacao\\K_0055.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[54]);
+    readimagefile(".\\Animacao\\K_0056.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[55]);
+    readimagefile(".\\Animacao\\K_0057.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[56]);
+    readimagefile(".\\Animacao\\K_0058.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[57]);
+    readimagefile(".\\Animacao\\K_0059.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[58]);
+    readimagefile(".\\Animacao\\K_0060.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[59]);
+    readimagefile(".\\Animacao\\K_0061.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[60]);
+    readimagefile(".\\Animacao\\K_0062.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[61]);
+    readimagefile(".\\Animacao\\K_0063.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[62]);
+    readimagefile(".\\Animacao\\K_0064.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[63]);
+    readimagefile(".\\Animacao\\K_0065.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[64]);
+    readimagefile(".\\Animacao\\K_0066.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[65]);
+    readimagefile(".\\Animacao\\K_0067.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[66]);
+    readimagefile(".\\Animacao\\K_0068.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[67]);
+    readimagefile(".\\Animacao\\K_0069.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[68]);
+    readimagefile(".\\Animacao\\K_0070.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[69]);
+    readimagefile(".\\Animacao\\K_0071.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[70]);
+    readimagefile(".\\Animacao\\K_0072.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[71]);
+    readimagefile(".\\Animacao\\K_0073.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[72]);
+    readimagefile(".\\Animacao\\K_0074.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[73]);
+    readimagefile(".\\Animacao\\K_0075.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[74]);
+    readimagefile(".\\Animacao\\K_0076.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[75]);
+    readimagefile(".\\Animacao\\K_0077.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[76]);
+    readimagefile(".\\Animacao\\K_0078.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[77]);
+    readimagefile(".\\Animacao\\K_0079.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[78]);
+    readimagefile(".\\Animacao\\K_0080.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[79]);
+    readimagefile(".\\Animacao\\K_0081.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[80]); 
+    i = 0;
+    
+    if (pg == 1) pg = 2; else pg=1;
+    setactivepage(pg);
+    setbkcolor(RGB(0, 0, 0));
+    cleardevice();
+    
+    for(i = 0; i < 80;) 
+    {
+      putimage(0, 0, t[i], COPY_PUT);
+      i++;
+    }
+
+  return 0; 
+}
+
+
 int Conclusao(Final final) {
 	int count = 0;
 	
@@ -763,6 +961,7 @@ int Conclusao(Final final) {
  			setfillstyle(0,RGB(0,0,0));
  			bar(0,0,1280,720);
  			if(count == 0) {
+ 				animacao_porta();
  				animacao_texto(texto,LarTela,583,50,50);
 				count++;	
 			}
@@ -902,7 +1101,7 @@ int comecaJogo(){
 			colisaoMouseSaidas(cameras[camera_atual],inventario);
 			
 			if(((gt2 - tempo) /1000) > 15) {
-				Conclusao(*(final0));
+				Conclusao(Final(*final0));
 			}
 			
  			setactivepage(pg);

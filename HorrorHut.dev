@@ -27,9 +27,9 @@ CommandLine=
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=4
-CompilerSettings=0000000100000000001000000
-UnitCount=1
+CompilerSet=6
+CompilerSettings=0000000000000000000000000
+UnitCount=2
 
 [VersionInfo]
 Major=1
@@ -52,6 +52,16 @@ SyncProduct=1
 
 [Unit1]
 FileName=main.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=Untitled1.cpp
 CompileCpp=1
 Folder=
 Compile=1

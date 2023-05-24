@@ -3,6 +3,16 @@ Order=0
 Focused=0
 [Editor_0]
 CursorCol=1
+<<<<<<< HEAD
 CursorRow=570
 TopLine=549
+=======
+CursorRow=932
+TopLine=777
+LeftChar=1
+[Editor_1]
+CursorCol=6
+CursorRow=8
+TopLine=1
+>>>>>>> 7d81f60ea5959c8f3eef15107ad0c220ebccf109
 LeftChar=1
