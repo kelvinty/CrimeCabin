@@ -102,7 +102,7 @@ int comecaJogo();
 int Tutorial();
 int Menu();
 int Conclusao(Final final);
-int Animacao();
+int animacao_porta();
 
 //Funções do jogo
 
@@ -650,7 +650,7 @@ void colisaoMouseBotao(BotoesVetor* botoes){
 				}  else if (botao.nome == "sair") {
 					delay(200);
 					mciSendString("stop Tema", NULL, 0, 0);
-					Animacao();
+					animacao_porta();
 					printf("clicou no sair\n");
 				}
 			}
@@ -741,19 +741,13 @@ void mudarDeCamera(int *camera_atual,int *tecla) {
 
 unsigned long long int gt1 = GetTickCount();
 
-int Animacao()  { 
+int animacao_porta()  { 
   int pg, Porta, i, um = 1, xt = 0;
   //delay(4000);
   void **t;                                         
   t = (void **)malloc(sizeof(void *) * QtdCenas);  
   
-  Porta = imagesize(0, 0, 1280,720);
-
-  Final *final0 = criar_final(0,"fuga de carro","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-  Final *final1 = criar_final(1,"matar monstro","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-  Final *final2 = criar_final(2,"quebrar a janela","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-  Final *final3 = criar_final(3,"botar fogo na casa","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-	
+  Porta = imagesize(0, 0, 1280,720);	
 
   mciSendString("stop Insetos", NULL, 0, 0);
 
@@ -924,24 +918,18 @@ int Animacao()  {
     readimagefile(".\\Animacao\\K_0081.BMP",0,0,1280,720);
     getimage(0,0,1280,720, t[80]); 
     i = 0;
-  while(true) {
+    
     if (pg == 1) pg = 2; else pg=1;
     setactivepage(pg);
     setbkcolor(RGB(0, 0, 0));
     cleardevice();
     
-    for(xt = 0; xt < 7; xt++) 
+    for(i = 0; i < 80;) 
     {
       putimage(0, 0, t[i], COPY_PUT);
+      i++;
     }
-    i++;
-    if(i == 80){
-       Conclusao(Final(*final0));	
-	}
-    //Conclusao(Final(*final0));
-    
-  }
-  
+
   return 0; 
 }
 
@@ -973,6 +961,7 @@ int Conclusao(Final final) {
  			setfillstyle(0,RGB(0,0,0));
  			bar(0,0,1280,720);
  			if(count == 0) {
+ 				animacao_porta();
  				animacao_texto(texto,LarTela,583,50,50);
 				count++;	
 			}
