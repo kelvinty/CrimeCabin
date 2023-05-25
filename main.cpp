@@ -153,28 +153,27 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 	}
 	
    	for (int i = 0; i < qtdLinhas;i++) {
-   		setfillstyle(1,RGB(0,0,0));
+//   		setfillstyle(1,RGB(0,0,0));
 		
    		for(int l = 0; l < qtdLetras;){
    			
    			if(linha[i][l] != '\0'){
-   				
+   				if (pg == 1) pg = 2; else pg=1;
+				setvisualpage(pg);
 				newStr[l] = linha[i][l];
 				newStr[l+1] = '\0';
 				outtextxy(pos_x ,pos_y + (i*alturaString),newStr);
 				delay(60);
-				printf("total letras:%d, letra atual:%d\n", qtdLetras, l);
 				setactivepage(pg);
 				l++;
 				
 			} else {
-				
 				mciSendString("stop Teclado", NULL, 0, 0);
-				return;
-				
+				return;	
 			}
 		}
         outtextxy(pos_x, pos_y + (i*alturaString), linha[i]);
+        setactivepage(pg);
 	}
 	
 	free(str);
@@ -265,16 +264,16 @@ void compara_vetor_itens(Final final,const ItensVetor *vec_inventario){
 			Item item_inventario = vec_inventario->itens[j];
 			if(item_final.id == item_inventario.id){
 				count++;
-				printf("item existe no final\n");
+//				printf("item existe no final\n");
 			} else {
-				printf("item nao existe nesse final\n");
+//				printf("item nao existe nesse final\n");
 			}
 		}
 	}
 	if(count == 2){
 		Conclusao(final);
 	} else {
-		printf("esse final não combina:%d\n", final.id);
+//		printf("esse final não combina:%d\n", final.id);
 	}
 	return;
 }
@@ -500,11 +499,11 @@ void mostrarSaidasCamera(const TCamera *camera) {
 	
 }
 
-void mostrarInventario(const TInventario *inventario) {
-	for(int i =0;i <= inventario->itens->capacidade;i++){
-		bar(inventario->x,inventario->y+(i*100),inventario->x+100,inventario->y+i+1*100);
-	}
-//	putimage(0,0,camera->imagem,COPY_PUT);
+void mostrarInventario(const TInventario *inventario,void *img) {
+//	for(int i =0;i <= inventario->itens->capacidade;i++){
+//		bar(inventario->x,inventario->y+(i*100),inventario->x+100,inventario->y+i+1*100);
+//	}
+	putimage(inventario->x,inventario->y,img,COPY_PUT);
 }
 
 void mostrarItensInventario(const TInventario *inventario) {
@@ -524,7 +523,7 @@ void mostrarBotoes(const BotoesVetor *botoes) {
 	
 }
 
-void mostraTempo(int tempo){
+void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
 	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
 	
@@ -548,10 +547,16 @@ void mostraTempo(int tempo){
 		segundos = 15;
 	}
 	
+	
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,4);
 	sprintf(str,"%d",tempo_limite - segundos);
 	int tamanho_texto = textwidth(str);
-	outtextxy(1280/2 - tamanho_texto/2 ,0,str);
+	
+	putimage(1280/2 - 150/2 ,0,hud_tempo_m,AND_PUT);
+	putimage(1280/2 - 150/2 ,0,hud_tempo,OR_PUT);
+	
+	
+	outtextxy(1280/2 - tamanho_texto/2 ,22,str);
 
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,2);
 	
@@ -561,11 +566,9 @@ void executaSom(unsigned long long int *ts1){
 	unsigned long long int ts2 = GetTickCount();
 	mciSendString("open .\\Audios\\Porta2.mp3 type MPEGVideo alias Porta", NULL, 0, 0);
 	waveOutSetVolume(0,0xFFFFFFFF);
-	printf("%d\n", ts2-*ts1);
 	
 	if((ts2 - *ts1) == 5000 ){
 		*ts1 = GetTickCount();
-		printf("chamou som : %d\n",(ts2 - *ts1));
 		mciSendString("seek Porta to start", NULL, 0, 0);
 		mciSendString("play Porta", NULL, 0, 0);
 	}
@@ -575,8 +578,6 @@ void mostrarBotao(const Botao *botao) {
 	putimage(botao->x, botao->y, botao->mascara, AND_PUT);
 	putimage(botao->x, botao->y, botao->imagem, OR_PUT);
 }
-
-
 
 void removeItensCamera(TCamera *camera) {
 	for(int i =0;i<camera->qtdItens;i++) {
@@ -716,7 +717,7 @@ void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
     				compara_vetor_itens(saida->finais->finais[i],inventario->itens);
 				}
     			
-				delay(500);	
+//				delay(500);	
 			}	
 		}	
 	}	
@@ -742,19 +743,17 @@ void mudarDeCamera(int *camera_atual,int *tecla) {
 unsigned long long int gt1 = GetTickCount();
 
 int animacao_porta()  { 
-  int pg, Porta, i, um = 1, xt = 0;
-  //delay(4000);
-  void **t;                                         
-  t = (void **)malloc(sizeof(void *) * QtdCenas);  
+  	int pg, Porta, i, um = 1, xt = 0;
+  	//delay(4000);
+  	void **t;                                         
+  	t = (void **)malloc(sizeof(void *) * QtdCenas);  
   
-  Porta = imagesize(0, 0, 1280,720);	
+  	Porta = imagesize(0, 0, 1280,720);	
 
-  mciSendString("stop Insetos", NULL, 0, 0);
-
-  for(i = 0; i < QtdCenas; i++)  
-    t[i] = malloc(Porta);
-    
-	i = 0;
+  	for(i = 0; i < QtdCenas; i++) {
+    	t[i] = malloc(Porta);
+	}
+	
     readimagefile(".\\Animacao\\K_0001.BMP",0,0,1280,720);
     getimage(0,0,1280,720, t[0]);
     readimagefile(".\\Animacao\\K_0002.BMP",0,0,1280,720);
@@ -917,20 +916,22 @@ int animacao_porta()  {
     getimage(0,0,1280,720, t[79]);
     readimagefile(".\\Animacao\\K_0081.BMP",0,0,1280,720);
     getimage(0,0,1280,720, t[80]); 
-    i = 0;
-    
-    if (pg == 1) pg = 2; else pg=1;
-    setactivepage(pg);
+   	
     setbkcolor(RGB(0, 0, 0));
-    cleardevice();
+   
     
-    for(i = 0; i < 80;) 
+    for(double j = 0; j < 80;) 
     {
-      putimage(0, 0, t[i], COPY_PUT);
-      i++;
+    	if (pg == 1) pg = 2; else pg=1;
+		setvisualpage(pg);
+		cleardevice();
+		int indi = ceil(j);
+      	putimage(0, 0, t[indi], COPY_PUT);
+      	j+= 0.13;
+      	setactivepage(pg);
     }
-
-  return 0; 
+    
+  	return 0; 
 }
 
 
@@ -947,7 +948,9 @@ int Conclusao(Final final) {
 	
 	char *texto = final.historia;
 	
-
+	animacao_porta();
+ 	animacao_texto(texto,LarTela,583,50,50);
+ 	
 	
 	delay(2000);
 	
@@ -961,8 +964,6 @@ int Conclusao(Final final) {
  			setfillstyle(0,RGB(0,0,0));
  			bar(0,0,1280,720);
  			if(count == 0) {
- 				animacao_porta();
- 				animacao_texto(texto,LarTela,583,50,50);
 				count++;	
 			}
 			setactivepage(pg);
@@ -989,12 +990,14 @@ int comecaJogo(){
 	
 	TMouse *mouse = mousePos();
 
-
-	
 	mciSendString("open .\\Audios\\BugsSound.mp3 type MPEGVideo alias Insetos", NULL, 0, 0);
 	waveOutSetVolume(0,0x88888888);
 	mciSendString("play Insetos repeat", NULL, 0, 0);
 	
+	void* hud_tempo = load_image(".\\Hud\\Relogio.bmp",150,75,0,0);
+	void* hud_tempo_mask = load_image(".\\Hud\\RelogioWB.bmp",150,75,0,0);
+	
+	void* hud_inventario = load_image(".\\Hud\\Inventario.bmp",100,200,0,0);
 	
 	void* item1_img = load_image("dinamite.bmp",100,100,200,200);
 	void* item1_mask = load_image("dinamite_pb.bmp",100,100,200,200);
@@ -1092,10 +1095,10 @@ int comecaJogo(){
  			mostrarCamera(&cameras[camera_atual]);
 			mostrarItensCamera(&cameras[camera_atual]);
 			
-			mostrarInventario(inventario);
+			mostrarInventario(inventario,hud_inventario);
 			mostrarItensInventario(inventario);
 			mostrarSaidasCamera(&cameras[camera_atual]);
-			mostraTempo(tempo);
+			mostraTempo(tempo,hud_tempo,hud_tempo_mask);
 			executaSom(&ts1);
 			colisaoMouseItens(cameras[camera_atual],inventario);
 			colisaoMouseSaidas(cameras[camera_atual],inventario);
