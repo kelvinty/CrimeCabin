@@ -127,6 +127,7 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 	mciSendString("open .\\Audios\\Teclado.mp3 type MPEGVideo alias Teclado", NULL, 0, 0);
 	waveOutSetVolume(0,0x88888888);
 	mciSendString("play Teclado repeat", NULL, 0, 0);
+	
 	double larguraString = textwidth(texto);
 	int alturaString = textheight(texto);
 	int qtdLetrasTexto = strlen(texto);
@@ -207,8 +208,6 @@ Item *criar_item(int id, char *nome,void *imagem, void *mascara, int x, int y, i
 	
 	return item;
 }
-
-
 
 void apaga_item(Item **item_ref) {
 	Item *item = *item_ref;
