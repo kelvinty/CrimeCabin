@@ -8,7 +8,7 @@
 #include <math.h>
 #include <string.h>
 
-#define QtdCenas  82
+#define QtdCenas  38
 
 //STRUCTS
 
@@ -828,106 +828,15 @@ int animacao_porta()  {
     getimage(0,0,1280,720, t[35]);
     readimagefile(".\\Animacao\\K_0037.BMP",0,0,1280,720);
     getimage(0,0,1280,720, t[36]);
-    readimagefile(".\\Animacao\\K_0038.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[37]);
-    readimagefile(".\\Animacao\\K_0039.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[38]);
-    readimagefile(".\\Animacao\\K_0040.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[39]);
-    readimagefile(".\\Animacao\\K_0041.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[40]);
-    readimagefile(".\\Animacao\\K_0042.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[41]);
-    readimagefile(".\\Animacao\\K_0043.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[42]);
-    readimagefile(".\\Animacao\\K_0044.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[43]);
-    readimagefile(".\\Animacao\\K_0045.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[44]);
-    readimagefile(".\\Animacao\\K_0046.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[45]);
-    readimagefile(".\\Animacao\\K_0047.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[46]);
-    readimagefile(".\\Animacao\\K_0048.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[47]);
-    readimagefile(".\\Animacao\\K_0049.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[48]);
-    readimagefile(".\\Animacao\\K_0050.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[49]);
-    readimagefile(".\\Animacao\\K_0051.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[50]);
-    readimagefile(".\\Animacao\\K_0052.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[51]);
-    readimagefile(".\\Animacao\\K_0053.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[52]);
-    readimagefile(".\\Animacao\\K_0054.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[53]);
-    readimagefile(".\\Animacao\\K_0055.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[54]);
-    readimagefile(".\\Animacao\\K_0056.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[55]);
-    readimagefile(".\\Animacao\\K_0057.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[56]);
-    readimagefile(".\\Animacao\\K_0058.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[57]);
-    readimagefile(".\\Animacao\\K_0059.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[58]);
-    readimagefile(".\\Animacao\\K_0060.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[59]);
-    readimagefile(".\\Animacao\\K_0061.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[60]);
-    readimagefile(".\\Animacao\\K_0062.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[61]);
-    readimagefile(".\\Animacao\\K_0063.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[62]);
-    readimagefile(".\\Animacao\\K_0064.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[63]);
-    readimagefile(".\\Animacao\\K_0065.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[64]);
-    readimagefile(".\\Animacao\\K_0066.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[65]);
-    readimagefile(".\\Animacao\\K_0067.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[66]);
-    readimagefile(".\\Animacao\\K_0068.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[67]);
-    readimagefile(".\\Animacao\\K_0069.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[68]);
-    readimagefile(".\\Animacao\\K_0070.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[69]);
-    readimagefile(".\\Animacao\\K_0071.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[70]);
-    readimagefile(".\\Animacao\\K_0072.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[71]);
-    readimagefile(".\\Animacao\\K_0073.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[72]);
-    readimagefile(".\\Animacao\\K_0074.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[73]);
-    readimagefile(".\\Animacao\\K_0075.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[74]);
-    readimagefile(".\\Animacao\\K_0076.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[75]);
-    readimagefile(".\\Animacao\\K_0077.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[76]);
-    readimagefile(".\\Animacao\\K_0078.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[77]);
-    readimagefile(".\\Animacao\\K_0079.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[78]);
-    readimagefile(".\\Animacao\\K_0080.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[79]);
-    readimagefile(".\\Animacao\\K_0081.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[80]); 
-   	
-    setbkcolor(RGB(0, 0, 0));
-   
     
-    for(double j = 0; j < 80;) 
+    for(double j = 0; j < 36;) 
     {
     	if (pg == 1) pg = 2; else pg=1;
 		setvisualpage(pg);
 		cleardevice();
 		int indi = ceil(j);
       	putimage(0, 0, t[indi], COPY_PUT);
-      	j+= 0.13;
+      	j+= 0.08;
       	setactivepage(pg);
     }
     
