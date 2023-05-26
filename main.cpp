@@ -170,7 +170,7 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 				
 			} else {
 				mciSendString("stop Teclado", NULL, 0, 0);
-				return;	
+					
 			}
 		}
         outtextxy(pos_x, pos_y + (i*alturaString), linha[i]);
@@ -186,7 +186,7 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 	free(linha);
 	linha = NULL;
 	free(newStr);
-	
+	delay(2000);
 	return;
 }
 
@@ -926,7 +926,7 @@ int animacao_porta()  {
 		cleardevice();
 		int indi = ceil(j);
       	putimage(0, 0, t[indi], COPY_PUT);
-      	j+= 0.13;
+      	j+= 0.1;
       	setactivepage(pg);
     }
     
@@ -950,24 +950,52 @@ int Conclusao(Final final) {
 	animacao_porta();
  	animacao_texto(texto,LarTela,583,50,50);
  	
+	void *fim_de_jogo = load_image("FimdeJogo.bmp",1280,720,0,0);
+	
+	void *botao1_img = load_image(".\\Hud\\Sim.bmp",100,50,0,0);
+	void *botao1_mask = load_image(".\\Hud\\SimWB.bmp",100,50,0,0);
+	
+	void *botao2_img = load_image(".\\Hud\\Nao.bmp",100,50,0,0);
+	void *botao2_mask = load_image(".\\Hud\\NaoWB.bmp",100,50,0,0);
+	
+	Botao *botao_sim = criar_botao("sim",botao1_img,botao1_mask,(1280/2)-75,600,100,50);
+	Botao *botao_nao = criar_botao("nao",botao2_img,botao2_mask,(1280/2)+75,600,100,50);
+	
+	BotoesVetor *botoes = criar_vetor_botoes(2);
+	
+	append_vetor_botoes(botoes,botao_sim);
+	append_vetor_botoes(botoes,botao_nao);
 	
 	delay(2000);
 	
 	while(true) {
  		gt2 = GetTickCount();
  		
-		if(gt2 - gt1 > 1000/60) {	
+		if(gt2 - gt1 > 1000/60) {
+			
 			if(pg == 1) pg = 2; else pg = 1;
  			setvisualpage(pg);
+ 			
  			cleardevice();
- 			setfillstyle(0,RGB(0,0,0));
- 			bar(0,0,1280,720);
- 			if(count == 0) {
-				count++;	
-			}
+ 			
+ 			putimage(0,0,fim_de_jogo,COPY_PUT);
+ 			
+ 			mostrarBotoes(botoes);
+			colisaoMouseBotao(botoes);
+			
 			setactivepage(pg);
 		}
 	}
+	deleteImage(botao1_img);
+	deleteImage(botao2_img);
+	
+	deleteImage(botao1_mask);
+	deleteImage(botao2_mask);
+	
+	deleteImage(fim_de_jogo);
+	
+	apaga_vetor_botoes(&botoes);
+	
 	return 0;
 }
 
