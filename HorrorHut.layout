@@ -2,10 +2,15 @@
 Order=0
 Focused=0
 [Editor_0]
-CursorCol=2
+CursorCol=24
 <<<<<<< HEAD
-CursorRow=228
-TopLine=217
+<<<<<<< HEAD
+CursorRow=207
+TopLine=202
+=======
+CursorRow=1174
+TopLine=805
+>>>>>>> 5a4d8a4cce0eee776e6c90c565779a6019e64636
 =======
 CursorRow=932
 TopLine=777
