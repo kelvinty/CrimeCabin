@@ -123,7 +123,7 @@ int strlen(char *str)
     return total;
 }
 
-void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
+int animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 	mciSendString("open .\\Audios\\Teclado.mp3 type MPEGVideo alias Teclado", NULL, 0, 0);
 	waveOutSetVolume(0,0x88888888);
 	mciSendString("play Teclado repeat", NULL, 0, 0);
@@ -154,10 +154,8 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 	}
 	
    	for (int i = 0; i < qtdLinhas;i++) {
-//   		setfillstyle(1,RGB(0,0,0));
-		
+
    		for(int l = 0; l < qtdLetras;){
-   			
    			if(linha[i][l] != '\0'){
    				if (pg == 1) pg = 2; else pg=1;
 				setvisualpage(pg);
@@ -167,27 +165,17 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 				delay(60);
 				setactivepage(pg);
 				l++;
-				
 			} else {
 				mciSendString("stop Teclado", NULL, 0, 0);
-					
+				break;	
 			}
 		}
         outtextxy(pos_x, pos_y + (i*alturaString), linha[i]);
         setactivepage(pg);
 	}
-	
-	free(str);
-
-	for(int i = 0; i < qtdLinhas; i++) {
-		free(linha[i]);	
-	}
-	
-	free(linha);
-	linha = NULL;
-	free(newStr);
-	delay(2000);
-	return;
+		
+	delay(1500);
+	return 0;
 }
 
 void deleteImage(void *image){
@@ -242,9 +230,10 @@ void apaga_vetor_itens(ItensVetor **vec_ref){
 
 void append_vetor_itens(ItensVetor *vec, Item *item){
 	if(vec->tamanho == vec->capacidade){
-		fprintf(stderr,"ERROR in 'append'\n");
-		fprintf(stderr,"Vetor cheio'\n");
-		exit(EXIT_FAILURE);
+		printf("vetor cheio");
+//		fprintf(stderr,"ERROR in 'append'\n");
+//		fprintf(stderr,"Vetor cheio'\n");
+//		exit(EXIT_FAILURE);
 	}
 	
 	vec->itens[vec->tamanho] = *item;
@@ -288,8 +277,6 @@ void remove_item_vetor(ItensVetor *vec,Item *item){
 				vec->tamanho--;
 			}
 		}
-		print_vetor_itens(vec);
-		
 	}
 }
 
@@ -373,8 +360,6 @@ FinaisVetor *criar_vetor_finais(int capacidade){
 }
 
 void print_vetor_finais(FinaisVetor *vec){
-	printf("entrou na funcao");
-	printf("tamanho: %d", vec->tamanho);
 	for(int i = 0;i < vec->tamanho;i++){
 		printf("final:%s, indice:%d\n",vec->finais[i].descricao,i);
 	}
@@ -412,7 +397,7 @@ void remove_final_vetor(FinaisVetor *vec,Final *final){
 				vec->tamanho--;
 			}
 		}
-		print_vetor_finais(vec);
+//		print_vetor_finais(vec);
 	}
 }
 
@@ -431,7 +416,6 @@ TMouse *mousePos(){
 	}
 	return mouse;
 }
-
 
 TInventario *criar_inventario(int x, int y) {
 	TInventario *inventario = (TInventario*)calloc(1,sizeof(TInventario));
@@ -490,18 +474,12 @@ void mostrarItensCamera(const TCamera *camera) {
 void mostrarSaidasCamera(const TCamera *camera) {
 	Saida *saida = camera->saida; 
 	if(saida != NULL){
-//		bar(saida->x,saida->y,saida->largura,saida->altura);
 		rectangle(saida->x,saida->y,saida->largura + saida->x,saida->altura+ saida->y);
 	}
-//	putimage(item.x, item.y, item.mascara, AND_PUT);
-//	putimage(item.x, item.y, item.imagem, OR_PUT);
-	
+
 }
 
 void mostrarInventario(const TInventario *inventario,void *img) {
-//	for(int i =0;i <= inventario->itens->capacidade;i++){
-//		bar(inventario->x,inventario->y+(i*100),inventario->x+100,inventario->y+i+1*100);
-//	}
 	putimage(inventario->x,inventario->y,img,COPY_PUT);
 }
 
@@ -526,7 +504,6 @@ void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
 	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
 	
-	
 	waveOutSetVolume(0,0xFFFFFFFF);
 	
 	bool chamou1;
@@ -545,7 +522,6 @@ void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 	if(segundos > 15) {
 		segundos = 15;
 	}
-	
 	
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,4);
 	sprintf(str,"%d",tempo_limite - segundos);
@@ -651,7 +627,6 @@ void colisaoMouseBotao(BotoesVetor* botoes){
 					delay(200);
 					mciSendString("stop Tema", NULL, 0, 0);
 					animacao_porta();
-					printf("clicou no sair\n");
 				}
 			}
 		}
@@ -684,7 +659,6 @@ void colisaoMouseItens(TCamera camera, TInventario *inventario) {
 }
 
 void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
-	
 	POINT P;
   	HWND janela;
   	janela = GetForegroundWindow();
@@ -706,17 +680,10 @@ void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
 			
 			delay(50);
 			
-    		if(GetKeyState(VK_LBUTTON)&0x80){
-    			
-    			printf("clicou na saida 123:%s\n", saida->nome);
-    			
-    			print_vetor_finais(camera.saida->finais);
-    			
+    		if(GetKeyState(VK_LBUTTON)&0x80){			
     			for(int i = 0;i< saida->finais->tamanho; i++){
     				compara_vetor_itens(saida->finais->finais[i],inventario->itens);
 				}
-    			
-//				delay(500);	
 			}	
 		}	
 	}	
@@ -949,7 +916,7 @@ int Conclusao(Final final) {
 	
 	animacao_porta();
  	animacao_texto(texto,LarTela,583,50,50);
- 	
+
 	void *fim_de_jogo = load_image("FimdeJogo.bmp",1280,720,0,0);
 	
 	void *botao1_img = load_image(".\\Hud\\Sim.bmp",100,50,0,0);
@@ -960,13 +927,10 @@ int Conclusao(Final final) {
 	
 	Botao *botao_sim = criar_botao("sim",botao1_img,botao1_mask,(1280/2)-75,600,100,50);
 	Botao *botao_nao = criar_botao("nao",botao2_img,botao2_mask,(1280/2)+75,600,100,50);
-	
 	BotoesVetor *botoes = criar_vetor_botoes(2);
 	
 	append_vetor_botoes(botoes,botao_sim);
 	append_vetor_botoes(botoes,botao_nao);
-	
-	delay(2000);
 	
 	while(true) {
  		gt2 = GetTickCount();
@@ -1054,9 +1018,6 @@ int comecaJogo(){
 	append_vetor_finais(finais0,final2);
 	append_vetor_finais(finais0,final3);
 	
-	print_vetor_finais(finais0);
-	print_vetor_itens(final0->itens);
-	
 	Saida *saida0 = criarSaida(0,"porta",1300,300,200,500);
 	Saida *saida1 = criarSaida(0,"janela",50,300,750,300);
 	
@@ -1067,8 +1028,6 @@ int comecaJogo(){
 	append_vetor_finais(saida1->finais,final1);
 	append_vetor_finais(saida1->finais,final2);
 	append_vetor_finais(saida1->finais,final3);
-	
-	print_vetor_finais(saida0->finais);
 	
 	void *img_cam0 = load_image("quarto0.bmp",LarTela,AltTela,0,0);
 	void *img_cam1 = load_image("quarto1.bmp",LarTela,AltTela,0,0);
@@ -1106,8 +1065,6 @@ int comecaJogo(){
  	append_vetor_itens(cameras[3].itens,dinamite4);
 	append_vetor_itens(cameras[1].itens,dinamite5);
 	append_vetor_itens(cameras[3].itens,dinamite6);
-	
-	print_vetor_finais(saida0->finais);
 	
  	while(true) {
  		gt2 = GetTickCount();
