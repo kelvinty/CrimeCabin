@@ -167,7 +167,7 @@ int animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y,unsi
 	}
 	
 	mciSendString("stop Teclado", NULL, 0, 0);
-	delay(1500);
+	delay(3000);
 	return 0;
 }
 
@@ -494,11 +494,7 @@ void mostrarBotoes(const BotoesVetor *botoes) {
 }
 
 void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
-	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
-	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
-	
-	waveOutSetVolume(0,0xFFFFFFFF);
-	
+
 	bool chamou1;
 	bool chamou2;
 	bool chamou3;
@@ -514,6 +510,7 @@ void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 	
 	if(segundos > 15) {
 		segundos = 15;
+		mciSendString("stop clock", NULL, 0, 0);
 	}
 	
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,4);
@@ -533,11 +530,22 @@ void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 void executaSom(unsigned long long int *ts1){
 	unsigned long long int ts2 = GetTickCount();
 	waveOutSetVolume(0,0xFFFFFFFF);
-	
+	int randomic_sound = rand() % 3;
 	if((ts2 - *ts1) == 5000 ){
-		*ts1 = GetTickCount();
-		mciSendString("seek Porta to start", NULL, 0, 0);
-		mciSendString("play Porta", NULL, 0, 0);
+		if(randomic_sound == 0){
+			mciSendString("seek Porta1 to start", NULL, 0, 0);
+			mciSendString("play Porta1", NULL, 0, 0);
+			*ts1 = GetTickCount();
+		} else if (randomic_sound == 1){
+			mciSendString("seek Porta2 to start", NULL, 0, 0);
+			mciSendString("play Porta2", NULL, 0, 0);
+			*ts1 = GetTickCount();
+		} else if (randomic_sound == 2){
+			mciSendString("seek Porta3 to start", NULL, 0, 0);
+			mciSendString("play Porta3", NULL, 0, 0);
+			*ts1 = GetTickCount();
+		}
+		
 	}
 }
 
@@ -573,13 +581,27 @@ bool verificaMouseClick() {
 
 
 void pegarItem(Item *_item, TCamera *camera, TInventario *inventario){
-
+	unsigned long long int ts1 = GetTickCount();
+	unsigned long long int ts2 = GetTickCount();
+	
 	for(int i = 0;i<camera->itens->tamanho;i++){
 		Item item = camera->itens->itens[i];
 		if(item.id == _item->id){
 			if(inventario->itens->tamanho >= inventario->itens->capacidade){
-				outtextxy(1280/2,720/2,"inventario cheio!");
+				while(ts2-ts1 < 1000){
+					ts2 = GetTickCount();
+					if(pg == 1) pg = 2; else pg = 1;
+					setvisualpage(pg);
+//					cleardevice();
+					settextstyle(SANS_SERIF_FONT,HORIZ_DIR,4);
+					outtextxy(1280/2 - textwidth("inventario cheio!")/2 ,720 -100,"inventario cheio!");
+					outtextxy(1280/2 - textwidth("Escolha uma saída!")/2 ,720 -70,"Escolha uma saída!");
+					setactivepage(pg);
+				}
 			} else {
+				waveOutSetVolume(0,0xFFFFFFFF);
+				mciSendString("seek Item to start", NULL, 0, 0);
+				mciSendString("play Item", NULL, 0, 0);
 				Item item = camera->itens->itens[i];
 				remove_item_vetor(camera->itens,&item);
 				append_vetor_itens(inventario->itens,&item);
@@ -694,20 +716,22 @@ void mudarDeCamera(int *camera_atual,char *tecla) {
         	*camera_atual = 3;
 		}
 		waveOutSetVolume(0,0xFFFFFFFF);
-		mciSendString("seek Camera to start", NULL, 0, 0);
-		mciSendString("play Camera", NULL, 0, 0);
-		delay(200);
+		mciSendString("seek Passos to start", NULL, 0, 0);
+		mciSendString("play Passos", NULL, 0, 0);
+		delay(60);
 	}
+	
 	if(GetKeyState(VK_D)&0X80) {
 		*camera_atual += 1;
 		if(*camera_atual > 3) {
         	*camera_atual = 0;
 		}
 		waveOutSetVolume(0,0xFFFFFFFF);
-		mciSendString("seek Camera to start", NULL, 0, 0);
-		mciSendString("play Camera", NULL, 0, 0);
-		delay(200);
+		mciSendString("seek Passos to start", NULL, 0, 0);
+		mciSendString("play Passos", NULL, 0, 0);
+		delay(60);
 	} 
+	
 }
 
 unsigned long long int gt1 = GetTickCount();
@@ -913,6 +937,7 @@ int Conclusao(Final final) {
 	unsigned long long int ts1 = GetTickCount();
 	
 	mciSendString("stop Insetos", NULL, 0, 0);
+	mciSendString("stop clock", NULL, 0, 0);
 	
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,2);
 	
@@ -920,7 +945,7 @@ int Conclusao(Final final) {
 	mciSendString("open .\\Audios\\Teclado.mp3 type MPEGVideo alias Teclado", NULL, 0, 0);
 	
 	int LarTela;
-	LarTela = 1100;
+	LarTela = 1050;
 	unsigned long long int gt2;
 	
 	char *texto = final.historia;
@@ -992,12 +1017,21 @@ int comecaJogo(){
 	
 	TMouse *mouse = mousePos();
 	
-	mciSendString("open .\\Audios\\Porta2.mp3 type MPEGVideo alias Porta", NULL, 0, 0);
-	mciSendString("open .\\Audios\\camera.mp3 type MPEGVideo alias Camera", NULL, 0, 0);
+	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
+	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
+	mciSendString("open .\\Audios\\porta3.mp3 type MPEGVideo alias Porta3", NULL, 0, 0);
+	mciSendString("open .\\Audios\\walk.mp3 type MPEGVideo alias Passos", NULL, 0, 0);
+	mciSendString("open .\\Audios\\clock.mp3 type MPEGVideo alias clock", NULL, 0, 0);
 	mciSendString("open .\\Audios\\BugsSound.mp3 type MPEGVideo alias Insetos", NULL, 0, 0);
+	mciSendString("open .\\Audios\\item-equip.mp3 type MPEGVideo alias Item", NULL, 0, 0);
 	
 	waveOutSetVolume(0,0x88888888);
+	
 	mciSendString("play Insetos repeat", NULL, 0, 0);
+	
+	waveOutSetVolume(0,0x55555555);
+	mciSendString("seek clock to start", NULL, 0, 0);
+	mciSendString("play clock", NULL, 0, 0);
 	
 	void* hud_tempo = load_image(".\\Hud\\Relogio.bmp",150,75,0,0);
 	void* hud_tempo_mask = load_image(".\\Hud\\RelogioWB.bmp",150,75,0,0);
@@ -1020,7 +1054,7 @@ int comecaJogo(){
 	Final *final0 = criar_final(0,"Sinalizador + Gasolina","Sem muito tempo para pensar, você desconsidera sua cabana para salvar sua vida. Espalhando gasolina, você espera a entrada do sujeito, recebido com sinalizador atirado em sua direção. Incendiando-o de uma distância segura., você escapa pela janela enquanto assiste a cabana e tudo dentro dela ser engolido em chamas. Você sobrevive.");
 	Final *final1 = criar_final(1,"Fósforo + gasolina","Você sabe que não há muito tempo para pensar e deve desconsiderar sua cabana para salvar sua vida. Espalhando gasolina, você espera a entrada do sujeito. Ao tentar incendiá-lo com um fósforo. Você também é pego pelas chamas, junto da cabana e do assassino. Talvez não tenha sido uma boa ideia incendiar algo tão próximo. Você está morto.");
 	Final *final2 = criar_final(2,"Armadilha + sinalizador"," Plantando uma armadilha no chão, você aguarda a entrada no sujeito, que é recebido com um disparo de sinalizador. Luz e a fumaça distraem o assassino, que dispara a armadilha. Imobilizado pela dor, o homem não é mais a ameaça, agora é a presa. Você sobrevive.");
-	Final *final3 = criar_final(3,"Machado + armadilha","Plantando uma armadilha no chão, você aguarda a entrada no sujeito, com um machado na mão. O assassino percebe a armadilha. Você avança contra ele e após flashes, sons altos e uma dor imobilizante, você está no chão. Não foi tão discreto, foi? Você está morto.");
+	Final *final3 = criar_final(3,"Machado + armadilha","Plantando uma armadilha no chão, você aguarda a entrada do sujeito, com um machado na mão. O assassino percebe a armadilha. Você avança contra ele e após flashes, sons altos e uma dor imobilizante, você está no chão. Não foi tão discreto, foi? Você está morto.");
 	Final *final4 = criar_final(4,"Rede + chave","Você alcança a chave do carro. Ao entrar, você arremessa uma rede em direção ao assassino e foge rapidamente pela janela. O tempo ganho é suficiente para escapar com o veículo. Alguns disparos atingem o carro, porém sem efeitos. Você sobrevive");
 	Final *final5 = criar_final(5,"Arma + qualquer item exceto munição"," A melhor companhia de um homem isolado em sua cabana é sua arma. Seu rifle é a primeira coisa que vem à sua cabeça. Você trava a mira na porta, que cede com os trancos do sujeito. Você dispara, fechando os olhos por reflexo. Não há recuo ou som de disparo. Sua arma está descarregada, mas não a dele, que sorri com a cena. Você está morto.");
 	Final *final6 = criar_final(6,"nenhum","Quem está lá fora? Não pode ser nada ruim, certo? Não no meio da floresta. Talvez alguém precise de ajuda. Você abre a porta e é recebido com um golpe. Talvez não tenha sido uma boa ideia…");
