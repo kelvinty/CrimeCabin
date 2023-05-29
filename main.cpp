@@ -704,33 +704,46 @@ void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
 	}	
 }
 
-void mudarDeCamera(int *camera_atual,char *tecla) {
+void mudarDeCamera(int *camera_atual,char *tecla,unsigned long long int tempo,unsigned long long int *tc2, bool *mudou) {
 	
 	int VK_A = 0X41;
-	int VK_D = 0X44;	
-	unsigned long long int ts2 = GetTickCount();
+	int VK_D = 0X44;
+		
+//	printf("%d\n",tc2);
 	
-	if(GetKeyState(VK_A)&0X80) {
-		*camera_atual -= 1;
-		if(*camera_atual < 0) {
-        	*camera_atual = 3;
+	if(*(mudou) != true){
+		if(GetKeyState(VK_A)&0X80) {
+			*(tc2) = GetTickCount();
+			*camera_atual -= 1;
+			if(*camera_atual < 0) {
+        		*camera_atual = 3;
+			}
+			waveOutSetVolume(0,0xFFFFFFFF);
+			mciSendString("seek Passos to start", NULL, 0, 0);
+			mciSendString("play Passos", NULL, 0, 0);
+//			
+//			printf("%d\n",tc2);
+//			printf("%d\n", tempo);
+			*(mudou) = true;
 		}
-		waveOutSetVolume(0,0xFFFFFFFF);
-		mciSendString("seek Passos to start", NULL, 0, 0);
-		mciSendString("play Passos", NULL, 0, 0);
-		delay(60);
+	
+		if(GetKeyState(VK_D)&0X80) {
+			*(tc2) = GetTickCount();
+			*camera_atual += 1;
+			if(*camera_atual > 3) {
+        		*camera_atual = 0;
+			}
+			waveOutSetVolume(0,0xFFFFFFFF);
+			mciSendString("seek Passos to start", NULL, 0, 0);
+			mciSendString("play Passos", NULL, 0, 0);
+			*(mudou) = true;
+		} 
+	}
+	if(tempo - *(tc2) > 200){
+//		printf("agora pode mudar\n");
+		*(mudou) = false;
 	}
 	
-	if(GetKeyState(VK_D)&0X80) {
-		*camera_atual += 1;
-		if(*camera_atual > 3) {
-        	*camera_atual = 0;
-		}
-		waveOutSetVolume(0,0xFFFFFFFF);
-		mciSendString("seek Passos to start", NULL, 0, 0);
-		mciSendString("play Passos", NULL, 0, 0);
-		delay(60);
-	} 
 	
 }
 
@@ -1008,6 +1021,9 @@ int comecaJogo(){
 	int qtdCam = 0;
 	int LarTela,AltTela;
 	
+	bool mudou = false;
+	unsigned long long int tc2 = GetTickCount();
+	
 	LarTela = 1280;
 	AltTela = 720;
 	
@@ -1166,7 +1182,7 @@ int comecaJogo(){
  			setvisualpage(pg);
  			cleardevice();
  			
- 			mudarDeCamera(&camera_atual,&tecla);
+ 			mudarDeCamera(&camera_atual,&tecla,gt2,&tc2,&mudou);
 
  			mostrarCamera(&cameras[camera_atual]);
 			mostrarItensCamera(&cameras[camera_atual]);
