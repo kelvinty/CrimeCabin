@@ -961,8 +961,8 @@ int Conclusao(Final final) {
 	void *botao2_img = load_image(".\\Hud\\Nao.bmp",100,50,0,0);
 	void *botao2_mask = load_image(".\\Hud\\NaoWB.bmp",100,50,0,0);
 	
-	Botao *botao_sim = criar_botao("sim",botao1_img,botao1_mask,(1280/2)-75,600,100,50);
-	Botao *botao_nao = criar_botao("nao",botao2_img,botao2_mask,(1280/2)+75,600,100,50);
+	Botao *botao_sim = criar_botao("sim",botao1_img,botao1_mask,(1280/2)-180,450,100,50);
+	Botao *botao_nao = criar_botao("nao",botao2_img,botao2_mask,(1280/2)+100,450,100,50);
 	BotoesVetor *botoes = criar_vetor_botoes(2);
 	
 	append_vetor_botoes(botoes,botao_sim);

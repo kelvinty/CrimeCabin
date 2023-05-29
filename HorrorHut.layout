@@ -2,11 +2,19 @@
 Order=0
 Focused=0
 [Editor_0]
+<<<<<<< HEAD
 CursorCol=17
 <<<<<<< HEAD
 <<<<<<< HEAD
 CursorRow=948
 TopLine=924
+=======
+CursorCol=2
+<<<<<<< HEAD
+<<<<<<< HEAD
+CursorRow=115
+TopLine=104
+>>>>>>> 0753262a560499f51f72d38369f270fb2446ef3d
 =======
 CursorRow=1174
 TopLine=805
