@@ -8,16 +8,9 @@
 #include <math.h>
 #include <string.h>
 
-#define QtdCenas  82
+#define QtdCenas  42
 
 //STRUCTS
-
-struct TMouse{
-	int x;
-	int y;
-	int largura;
-	int altura;
-};
 
 typedef struct botao{
 	char *nome;
@@ -123,72 +116,54 @@ int strlen(char *str)
     return total;
 }
 
-void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
-	mciSendString("open .\\Audios\\Teclado.mp3 type MPEGVideo alias Teclado", NULL, 0, 0);
-	waveOutSetVolume(0,0x88888888);
-	mciSendString("play Teclado repeat", NULL, 0, 0);
+int animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y,unsigned long long int ts1) {
+	
+	unsigned long long int ts2 = GetTickCount();
 	
 	double larguraString = textwidth(texto);
-	int alturaString = textheight(texto);
+	double alturaString = textheight(texto);
+	
 	int qtdLetrasTexto = strlen(texto);
-	
+	int qtdLinhas = ceil(larguraString/quebra_linha);	
 	int larguraLetras = larguraString/qtdLetrasTexto;
-	
-	int larguraTexto = qtdLetrasTexto*larguraLetras;
-	
-	int qtdLinhas = ceil(larguraString/quebra_linha);
-	int qtdLetras = quebra_linha/larguraLetras;
-	
-	char **linha = (char**)malloc(sizeof(char*)*qtdLinhas);
-	char *str = (char*)malloc(sizeof(char)*qtdLinhas);
-  	char *newStr = (char*)malloc(sizeof(char)*qtdLetras);
+	int qtdLetrasLinha = ceil(quebra_linha/larguraLetras);
+
+	char *str = (char*)malloc(sizeof(char)*qtdLetrasTexto);
+
+  	int letraAtual = 0;
   	
+  	waveOutSetVolume(0,0x88888888);
+  	mciSendString("seek Teclado to start", NULL, 0, 0);
+	mciSendString("play Teclado repeat", NULL, 0, 0);
+  	
+  	//loop para guardar os textos separados em linhas
   	for(int k = 0;k < qtdLinhas;k++) {
-  		for(int j = 0; j < qtdLetras;){
-  			str[j] = texto[j+ (k*qtdLetras)];
-			str[j+1] = '\0';
-			j++;
-		}
-		linha[k] = (char*)malloc(sizeof(char)*(qtdLetras+1));
-		strcpy(linha[k], str);
-	}
-	
-   	for (int i = 0; i < qtdLinhas;i++) {
-//   		setfillstyle(1,RGB(0,0,0));
-		
-   		for(int l = 0; l < qtdLetras;){
-   			
-   			if(linha[i][l] != '\0'){
-   				if (pg == 1) pg = 2; else pg=1;
-				setvisualpage(pg);
-				newStr[l] = linha[i][l];
-				newStr[l+1] = '\0';
-				outtextxy(pos_x ,pos_y + (i*alturaString),newStr);
-				delay(60);
-				setactivepage(pg);
-				l++;
-				
-			} else {
-				mciSendString("stop Teclado", NULL, 0, 0);
-					
+  		//percorre um loop sobre as linhas do texto
+  		for(int j = 0;j< qtdLetrasLinha || textwidth(str) < quebra_linha;j++){
+  			if (pg == 1) pg = 2; else pg=1;
+			setvisualpage(pg);
+  			//percorre um loop para cada letra a ser adicionada na linha atual
+  			str[j] = texto[letraAtual]; //adiciona a letra do texto no indice atual + a posição da linha ex: linha 1 * qtdLetras = texto[183] = "a";
+			str[j+1] = '\0';//adiciona a trava de leitura de string no final da lista 
+			outtextxy(pos_x ,pos_y + (k*alturaString),str);//denhando o texto na tela
+			delay(65);
+			letraAtual++;
+			setactivepage(pg);
+			if(letraAtual > qtdLetrasTexto) {
+				break;//sai do loop quando a atingir a quantidade de letras
 			}
 		}
-        outtextxy(pos_x, pos_y + (i*alturaString), linha[i]);
+		if(letraAtual > qtdLetrasTexto) {
+			break;//sai do loop quando a atingir a quantidade de letras
+		}
+		outtextxy(pos_x, pos_y + (k*alturaString), str);//desenha a linha do texto passado na tela
         setactivepage(pg);
 	}
 	
-	free(str);
+	mciSendString("stop Teclado", NULL, 0, 0);
+	delay(3000);
+	return 0;
 
-	for(int i = 0; i < qtdLinhas; i++) {
-		free(linha[i]);	
-		print
-	}
-	
-	free(linha);
-	linha = NULL;
-	free(newStr);
-//	delay(2000);
-	return;
 }
 
 void deleteImage(void *image){
@@ -243,6 +218,7 @@ void apaga_vetor_itens(ItensVetor **vec_ref){
 
 void append_vetor_itens(ItensVetor *vec, Item *item){
 	if(vec->tamanho == vec->capacidade){
+		printf("vetor cheio");
 		fprintf(stderr,"ERROR in 'append'\n");
 		fprintf(stderr,"Vetor cheio'\n");
 		exit(EXIT_FAILURE);
@@ -253,7 +229,7 @@ void append_vetor_itens(ItensVetor *vec, Item *item){
 	vec->tamanho++;
 }
 
-void compara_vetor_itens(Final final,const ItensVetor *vec_inventario){
+void compara_vetor_itens(Final final,const ItensVetor *vec_inventario,Final generico){
 	int count = 0;
 	
 	ItensVetor *vec_final = final.itens;
@@ -264,16 +240,13 @@ void compara_vetor_itens(Final final,const ItensVetor *vec_inventario){
 			Item item_inventario = vec_inventario->itens[j];
 			if(item_final.id == item_inventario.id){
 				count++;
-//				printf("item existe no final\n");
-			} else {
-//				printf("item nao existe nesse final\n");
-			}
+			} 
 		}
 	}
 	if(count == 2){
 		Conclusao(final);
 	} else {
-//		printf("esse final não combina:%d\n", final.id);
+		Conclusao(generico);
 	}
 	return;
 }
@@ -289,8 +262,6 @@ void remove_item_vetor(ItensVetor *vec,Item *item){
 				vec->tamanho--;
 			}
 		}
-		print_vetor_itens(vec);
-		
 	}
 }
 
@@ -374,8 +345,6 @@ FinaisVetor *criar_vetor_finais(int capacidade){
 }
 
 void print_vetor_finais(FinaisVetor *vec){
-	printf("entrou na funcao");
-	printf("tamanho: %d", vec->tamanho);
 	for(int i = 0;i < vec->tamanho;i++){
 		printf("final:%s, indice:%d\n",vec->finais[i].descricao,i);
 	}
@@ -413,26 +382,9 @@ void remove_final_vetor(FinaisVetor *vec,Final *final){
 				vec->tamanho--;
 			}
 		}
-		print_vetor_finais(vec);
+//		print_vetor_finais(vec);
 	}
 }
-
-
-TMouse *mousePos(){
-	TMouse *mouse = (TMouse*)malloc(sizeof(TMouse));
-	if(!ismouseclick(WM_LBUTTONDOWN)){
-		mouse->x = mousex();
-		mouse->y = mousey();
-		clearmouseclick(WM_LBUTTONDOWN);
-	} 
-	if(ismouseclick(WM_LBUTTONDOWN)){
-		mouse->x = mousex();
-		mouse->y = mousey();
-		clearmouseclick(WM_LBUTTONDOWN);
-	}
-	return mouse;
-}
-
 
 TInventario *criar_inventario(int x, int y) {
 	TInventario *inventario = (TInventario*)calloc(1,sizeof(TInventario));
@@ -491,18 +443,12 @@ void mostrarItensCamera(const TCamera *camera) {
 void mostrarSaidasCamera(const TCamera *camera) {
 	Saida *saida = camera->saida; 
 	if(saida != NULL){
-//		bar(saida->x,saida->y,saida->largura,saida->altura);
 		rectangle(saida->x,saida->y,saida->largura + saida->x,saida->altura+ saida->y);
 	}
-//	putimage(item.x, item.y, item.mascara, AND_PUT);
-//	putimage(item.x, item.y, item.imagem, OR_PUT);
-	
+
 }
 
 void mostrarInventario(const TInventario *inventario,void *img) {
-//	for(int i =0;i <= inventario->itens->capacidade;i++){
-//		bar(inventario->x,inventario->y+(i*100),inventario->x+100,inventario->y+i+1*100);
-//	}
 	putimage(inventario->x,inventario->y,img,COPY_PUT);
 }
 
@@ -524,12 +470,7 @@ void mostrarBotoes(const BotoesVetor *botoes) {
 }
 
 void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
-	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
-	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
-	
-	
-	waveOutSetVolume(0,0xFFFFFFFF);
-	
+
 	bool chamou1;
 	bool chamou2;
 	bool chamou3;
@@ -545,8 +486,8 @@ void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 	
 	if(segundos > 15) {
 		segundos = 15;
+		mciSendString("stop clock", NULL, 0, 0);
 	}
-	
 	
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,4);
 	sprintf(str,"%d",tempo_limite - segundos);
@@ -564,13 +505,23 @@ void mostraTempo(int tempo, void*hud_tempo, void*hud_tempo_m){
 
 void executaSom(unsigned long long int *ts1){
 	unsigned long long int ts2 = GetTickCount();
-	mciSendString("open .\\Audios\\Porta2.mp3 type MPEGVideo alias Porta", NULL, 0, 0);
 	waveOutSetVolume(0,0xFFFFFFFF);
-	
-	if((ts2 - *ts1) == 5000 ){
-		*ts1 = GetTickCount();
-		mciSendString("seek Porta to start", NULL, 0, 0);
-		mciSendString("play Porta", NULL, 0, 0);
+	int randomic_sound = rand() % 3;
+	if((ts2 - *ts1) >= 5000 ){
+		if(randomic_sound == 0){
+			mciSendString("seek Porta1 to start", NULL, 0, 0);
+			mciSendString("play Porta1", NULL, 0, 0);
+			*ts1 = GetTickCount();
+		} else if (randomic_sound == 1){
+			mciSendString("seek Porta2 to start", NULL, 0, 0);
+			mciSendString("play Porta2", NULL, 0, 0);
+			*ts1 = GetTickCount();
+		} else if (randomic_sound == 2){
+			mciSendString("seek Porta3 to start", NULL, 0, 0);
+			mciSendString("play Porta3", NULL, 0, 0);
+			*ts1 = GetTickCount();
+		}
+		
 	}
 }
 
@@ -606,13 +557,32 @@ bool verificaMouseClick() {
 
 
 void pegarItem(Item *_item, TCamera *camera, TInventario *inventario){
-
+	unsigned long long int ts1 = GetTickCount();
+	unsigned long long int ts2 = GetTickCount();
+	
 	for(int i = 0;i<camera->itens->tamanho;i++){
 		Item item = camera->itens->itens[i];
 		if(item.id == _item->id){
-			Item item = camera->itens->itens[i];
-			remove_item_vetor(camera->itens,&item);
-			append_vetor_itens(inventario->itens,&item);
+			if(inventario->itens->tamanho >= inventario->itens->capacidade){
+				while(ts2-ts1 < 1000){
+					ts2 = GetTickCount();
+					if(pg == 1) pg = 2; else pg = 1;
+					setvisualpage(pg);
+//					cleardevice();
+					settextstyle(SANS_SERIF_FONT,HORIZ_DIR,4);
+					outtextxy(1280/2 - textwidth("inventario cheio!")/2 ,720 -100,"inventario cheio!");
+					outtextxy(1280/2 - textwidth("Escolha uma saída!")/2 ,720 -70,"Escolha uma saída!");
+					setactivepage(pg);
+				}
+			} else {
+				waveOutSetVolume(0,0xFFFFFFFF);
+				mciSendString("seek Item to start", NULL, 0, 0);
+				mciSendString("play Item", NULL, 0, 0);
+				Item item = camera->itens->itens[i];
+				remove_item_vetor(camera->itens,&item);
+				append_vetor_itens(inventario->itens,&item);
+			}
+			
 		}
 	}
 
@@ -622,11 +592,6 @@ void colisaoMouseBotao(BotoesVetor* botoes){
 	POINT P;
   	HWND janela;
   	janela = GetForegroundWindow();
-
-  	mciSendString("open .\\Audios\\MusicaTema.mp3 type MPEGVideo alias Tema", NULL, 0, 0);
-	waveOutSetVolume(0,0xFFFFFFFF);
-	mciSendString("play Tema repeat", NULL, 0, 0);
-
   	
   	if (GetCursorPos(&P)) // captura a posição do mouse. A variável P é carregada com coordenadas físicas de tela
         if (ScreenToClient(janela, &P)) 
@@ -649,10 +614,11 @@ void colisaoMouseBotao(BotoesVetor* botoes){
 					delay(200);
 					Menu();
 				}  else if (botao.nome == "sair") {
-					delay(200);
-					mciSendString("stop Tema", NULL, 0, 0);
-					animacao_porta();
-					printf("clicou no sair\n");
+					exit(EXIT_FAILURE);
+				} else if (botao.nome == "sim"){
+					comecaJogo();
+				} else if (botao.nome == "nao"){
+					exit(EXIT_FAILURE);
 				}
 			}
 		}
@@ -684,8 +650,7 @@ void colisaoMouseItens(TCamera camera, TInventario *inventario) {
 	
 }
 
-void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
-	
+void colisaoMouseSaidas(TCamera camera, TInventario *inventario,Final generico) {
 	POINT P;
   	HWND janela;
   	janela = GetForegroundWindow();
@@ -708,36 +673,56 @@ void colisaoMouseSaidas(TCamera camera, TInventario *inventario) {
 			delay(50);
 			
     		if(GetKeyState(VK_LBUTTON)&0x80){
-    			
-    			printf("clicou na saida 123:%s\n", saida->nome);
-    			
-    			print_vetor_finais(camera.saida->finais);
-    			
+				printf("clicou na saida : %s\n", saida->nome);			
     			for(int i = 0;i< saida->finais->tamanho; i++){
-    				compara_vetor_itens(saida->finais->finais[i],inventario->itens);
+    				compara_vetor_itens(saida->finais->finais[i],inventario->itens,generico);
 				}
-    			
-//				delay(500);	
 			}	
 		}	
 	}	
 }
 
-void mudarDeCamera(int *camera_atual,int *tecla) {
-	if(GetKeyState(VK_LEFT)&0X80) {
-		*camera_atual -= 1;
-		if(*camera_atual < 0) {
-        	*camera_atual = 3;
+void mudarDeCamera(int *camera_atual,char *tecla,unsigned long long int tempo,unsigned long long int *tc2, bool *mudou) {
+	
+	int VK_A = 0X41;
+	int VK_D = 0X44;
+		
+//	printf("%d\n",tc2);
+	
+	if(*(mudou) != true){
+		if(GetKeyState(VK_A)&0X80) {
+			*(tc2) = GetTickCount();
+			*camera_atual -= 1;
+			if(*camera_atual < 0) {
+        		*camera_atual = 3;
+			}
+			waveOutSetVolume(0,0xFFFFFFFF);
+			mciSendString("seek Passos to start", NULL, 0, 0);
+			mciSendString("play Passos", NULL, 0, 0);
+//			
+//			printf("%d\n",tc2);
+//			printf("%d\n", tempo);
+			*(mudou) = true;
 		}
-		delay(200);
+	
+		if(GetKeyState(VK_D)&0X80) {
+			*(tc2) = GetTickCount();
+			*camera_atual += 1;
+			if(*camera_atual > 3) {
+        		*camera_atual = 0;
+			}
+			waveOutSetVolume(0,0xFFFFFFFF);
+			mciSendString("seek Passos to start", NULL, 0, 0);
+			mciSendString("play Passos", NULL, 0, 0);
+			*(mudou) = true;
+		} 
 	}
-	if(GetKeyState(VK_RIGHT)&0X80) {
-		*camera_atual += 1;
-		if(*camera_atual > 3) {
-        	*camera_atual = 0;
-		}
-		delay(200);
-	} 
+	if(tempo - *(tc2) > 200){
+//		printf("agora pode mudar\n");
+		*(mudou) = false;
+	}
+	
+	
 }
 
 unsigned long long int gt1 = GetTickCount();
@@ -836,91 +821,13 @@ int animacao_porta()  {
     getimage(0,0,1280,720, t[39]);
     readimagefile(".\\Animacao\\K_0041.BMP",0,0,1280,720);
     getimage(0,0,1280,720, t[40]);
-    readimagefile(".\\Animacao\\K_0042.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[41]);
-    readimagefile(".\\Animacao\\K_0043.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[42]);
-    readimagefile(".\\Animacao\\K_0044.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[43]);
-    readimagefile(".\\Animacao\\K_0045.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[44]);
-    readimagefile(".\\Animacao\\K_0046.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[45]);
-    readimagefile(".\\Animacao\\K_0047.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[46]);
-    readimagefile(".\\Animacao\\K_0048.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[47]);
-    readimagefile(".\\Animacao\\K_0049.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[48]);
-    readimagefile(".\\Animacao\\K_0050.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[49]);
-    readimagefile(".\\Animacao\\K_0051.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[50]);
-    readimagefile(".\\Animacao\\K_0052.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[51]);
-    readimagefile(".\\Animacao\\K_0053.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[52]);
-    readimagefile(".\\Animacao\\K_0054.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[53]);
-    readimagefile(".\\Animacao\\K_0055.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[54]);
-    readimagefile(".\\Animacao\\K_0056.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[55]);
-    readimagefile(".\\Animacao\\K_0057.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[56]);
-    readimagefile(".\\Animacao\\K_0058.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[57]);
-    readimagefile(".\\Animacao\\K_0059.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[58]);
-    readimagefile(".\\Animacao\\K_0060.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[59]);
-    readimagefile(".\\Animacao\\K_0061.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[60]);
-    readimagefile(".\\Animacao\\K_0062.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[61]);
-    readimagefile(".\\Animacao\\K_0063.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[62]);
-    readimagefile(".\\Animacao\\K_0064.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[63]);
-    readimagefile(".\\Animacao\\K_0065.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[64]);
-    readimagefile(".\\Animacao\\K_0066.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[65]);
-    readimagefile(".\\Animacao\\K_0067.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[66]);
-    readimagefile(".\\Animacao\\K_0068.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[67]);
-    readimagefile(".\\Animacao\\K_0069.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[68]);
-    readimagefile(".\\Animacao\\K_0070.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[69]);
-    readimagefile(".\\Animacao\\K_0071.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[70]);
-    readimagefile(".\\Animacao\\K_0072.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[71]);
-    readimagefile(".\\Animacao\\K_0073.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[72]);
-    readimagefile(".\\Animacao\\K_0074.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[73]);
-    readimagefile(".\\Animacao\\K_0075.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[74]);
-    readimagefile(".\\Animacao\\K_0076.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[75]);
-    readimagefile(".\\Animacao\\K_0077.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[76]);
-    readimagefile(".\\Animacao\\K_0078.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[77]);
-    readimagefile(".\\Animacao\\K_0079.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[78]);
-    readimagefile(".\\Animacao\\K_0080.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[79]);
-    readimagefile(".\\Animacao\\K_0081.BMP",0,0,1280,720);
-    getimage(0,0,1280,720, t[80]); 
-   	
-    setbkcolor(RGB(0, 0, 0));
-   
+
+	setbkcolor(RGB(0, 0, 0));
+	
+   	mciSendString("seek Abrindo to start", NULL, 0, 0);
+   	mciSendString("play Abrindo", NULL, 0, 0);
     
-    for(double j = 0; j < 80;) 
+    for(double j = 0; j < 40;) 
     {
     	if (pg == 1) pg = 2; else pg=1;
 		setvisualpage(pg);
@@ -931,26 +838,33 @@ int animacao_porta()  {
       	setactivepage(pg);
     }
     
+    mciSendString("stop Abrindo", NULL, 0, 0);
+    
   	return 0; 
 }
 
 
 int Conclusao(Final final) {
 	int count = 0;
+	unsigned long long int ts1 = GetTickCount();
 	
 	mciSendString("stop Insetos", NULL, 0, 0);
+	mciSendString("stop clock", NULL, 0, 0);
 	
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,2);
 	
+	mciSendString("open .\\Audios\\porta-rangendo.mp3 type MPEGVideo alias Abrindo", NULL, 0, 0);
+	mciSendString("open .\\Audios\\Teclado.mp3 type MPEGVideo alias Teclado", NULL, 0, 0);
+	
 	int LarTela;
-	LarTela = 1100;
+	LarTela = 1050;
 	unsigned long long int gt2;
 	
 	char *texto = final.historia;
 	
 	animacao_porta();
- 	animacao_texto(texto,LarTela,583,50,50);
- 	
+ 	animacao_texto(texto,LarTela,583,50,50,ts1);
+
 	void *fim_de_jogo = load_image("FimdeJogo.bmp",1280,720,0,0);
 	
 	void *botao1_img = load_image(".\\Hud\\Sim.bmp",100,50,0,0);
@@ -959,15 +873,12 @@ int Conclusao(Final final) {
 	void *botao2_img = load_image(".\\Hud\\Nao.bmp",100,50,0,0);
 	void *botao2_mask = load_image(".\\Hud\\NaoWB.bmp",100,50,0,0);
 	
-	Botao *botao_sim = criar_botao("sim",botao1_img,botao1_mask,(1280/2)-75,600,100,50);
-	Botao *botao_nao = criar_botao("nao",botao2_img,botao2_mask,(1280/2)+75,600,100,50);
-	
+	Botao *botao_sim = criar_botao("sim",botao1_img,botao1_mask,(1280/2)-180,450,100,50);
+	Botao *botao_nao = criar_botao("nao",botao2_img,botao2_mask,(1280/2)+100,450,100,50);
 	BotoesVetor *botoes = criar_vetor_botoes(2);
 	
 	append_vetor_botoes(botoes,botao_sim);
 	append_vetor_botoes(botoes,botao_nao);
-	
-	delay(2000);
 	
 	while(true) {
  		gt2 = GetTickCount();
@@ -1001,13 +912,20 @@ int Conclusao(Final final) {
 }
 
 int comecaJogo(){
+	//variaveis do jogo
 	unsigned long long int tempo = GetTickCount();
 	unsigned long long int gt2;
 	unsigned long long int ts1 = GetTickCount();
-    int tecla = 0;
+	unsigned long long int tc2 = GetTickCount();
+	
+    char tecla = 0;
 	int camera_atual = 0;
 	int qtdCam = 0;
 	int LarTela,AltTela;
+	
+	bool mudou = false;
+
+
 	
 	LarTela = 1280;
 	AltTela = 720;
@@ -1015,61 +933,194 @@ int comecaJogo(){
 	setlocale(LC_ALL,"Portuguese");
 	settextstyle(SANS_SERIF_FONT,HORIZ_DIR,2);
 	
-	
-	TMouse *mouse = mousePos();
-
+	mciSendString("open .\\Audios\\porta1.mp3 type MPEGVideo alias Porta1", NULL, 0, 0);
+	mciSendString("open .\\Audios\\porta2.mp3 type MPEGVideo alias Porta2", NULL, 0, 0);
+	mciSendString("open .\\Audios\\porta3.mp3 type MPEGVideo alias Porta3", NULL, 0, 0);
+	mciSendString("open .\\Audios\\walk.mp3 type MPEGVideo alias Passos", NULL, 0, 0);
+	mciSendString("open .\\Audios\\clock.mp3 type MPEGVideo alias clock", NULL, 0, 0);
 	mciSendString("open .\\Audios\\BugsSound.mp3 type MPEGVideo alias Insetos", NULL, 0, 0);
+	mciSendString("open .\\Audios\\item-equip.mp3 type MPEGVideo alias Item", NULL, 0, 0);
+	
 	waveOutSetVolume(0,0x88888888);
+	mciSendString("seek Insetos to start", NULL, 0, 0);
 	mciSendString("play Insetos repeat", NULL, 0, 0);
+	
+	waveOutSetVolume(0,0x55555555);
+	mciSendString("seek clock to start", NULL, 0, 0);
+	mciSendString("play clock", NULL, 0, 0);
 	
 	void* hud_tempo = load_image(".\\Hud\\Relogio.bmp",150,75,0,0);
 	void* hud_tempo_mask = load_image(".\\Hud\\RelogioWB.bmp",150,75,0,0);
 	
 	void* hud_inventario = load_image(".\\Hud\\Inventario.bmp",100,200,0,0);
 	
-	void* item1_img = load_image("dinamite.bmp",100,100,200,200);
-	void* item1_mask = load_image("dinamite_pb.bmp",100,100,200,200);
+	void* item1_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item1_mask = load_image("dinamite_pb.bmp",150,150,200,200);
 	
-	Item *dinamite1 = criar_item(0,"dinamite1",item1_img,item1_mask,200,200,100,100);
-    Item *dinamite2 = criar_item(1,"dinamite2",item1_img,item1_mask,300,200,100,100);
-    Item *dinamite3 = criar_item(2,"dinamite3",item1_img,item1_mask,400,200,100,100);
-    Item *dinamite4 = criar_item(3,"dinamite4",item1_img,item1_mask,500,200,100,100);
-    Item *dinamite5 = criar_item(4,"dinamite5",item1_img,item1_mask,600,200,100,100);
-    Item *dinamite6 = criar_item(5,"dinamite6",item1_img,item1_mask,700,200,100,100);
-    //variaveis do jogo
+	Item *sinalizador = criar_item(0,"sinalizador",item1_img,item1_mask,200,200,50,50);
+    Item *gasolina = criar_item(1,"gasolina",item1_img,item1_mask,300,200,50,50);
+    Item *fosforo = criar_item(2,"fosforo",item1_img,item1_mask,400,200,100,100);
+    Item *armadilha = criar_item(3,"armadilha",item1_img,item1_mask,500,200,100,100);
+    Item *machado = criar_item(4,"machado",item1_img,item1_mask,600,200,100,100);
+    Item *rede = criar_item(5,"rede",item1_img,item1_mask,700,200,100,100);
+    Item *chave = criar_item(6,"chave",item1_img,item1_mask,900,200,100,100);
+    Item *arma = criar_item(7,"arma",item1_img,item1_mask,600,400,100,100);
+    Item *dinamite = criar_item(8,"dinamite",item1_img,item1_mask,600,400,100,100);
+    Item *municao = criar_item(9,"municao",item1_img,item1_mask,600,400,100,100);
     
-	Final *final0 = criar_final(0,"fuga de carro","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-	Final *final1 = criar_final(1,"matar monstro","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-	Final *final2 = criar_final(2,"quebrar a janela","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-	Final *final3 = criar_final(3,"botar fogo na casa","Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id dignissim quam. Proin sit amet pulvinar nulla, et sagittis magna. Curabitur congue consectetur sollicitudin. Suspendisse aliquam lorem a est tincidunt semper. Vestibulum sed hendrerit elit. Praesent lorem ex, lacinia vel");
-	
+	Final *final0 = criar_final(0,"Sinalizador + Gasolina","A situação exigia que a única prioridade fosse a minha vida. Se tudo tivesse que ser consumido pelo fogo para que eu escapasse daquele lugar, assim seria. Espalhei o combustível que eu tinha pela porta e de longe esperei pela entrada do sujeito. Em poucos instantes, a porta cedeu. O homem armado só não esperava receber um tiro de sinalizador assim que colocou os pés dentro da minha cabana. O disparo explodiu em uma bola de fogo no momento em que encostou no líquido. Eu assisti tudo pegar fogo, inclusive o sujeito e escapei pela janela. Era o fim da minha velha cabana, mas era o fim de um assassino e de uma noite que nunca será esquecida Você sobrevive.");
 	final0->itens = criar_vetor_itens(2);
+	append_vetor_itens(final0->itens,sinalizador);
+	append_vetor_itens(final0->itens,gasolina);
 	
-	append_vetor_itens(final0->itens,dinamite2);
-	append_vetor_itens(final0->itens,dinamite5);
+	Final *final1 = criar_final(1,"Fósforo + gasolina","Você sabe que não há muito tempo para pensar e deve desconsiderar sua cabana para salvar sua vida. Espalhando gasolina, você espera a entrada do sujeito. Ao tentar incendiá-lo com um fósforo. Você também é pego pelas chamas, junto da cabana e do assassino. Talvez não tenha sido uma boa ideia incendiar algo tão próximo. Você está morto.");
+	final1->itens = criar_vetor_itens(2);
+	append_vetor_itens(final1->itens,fosforo);
+	append_vetor_itens(final1->itens,gasolina);
 	
-	FinaisVetor *finais0 = criar_vetor_finais(4);
+	Final *final2 = criar_final(2,"Arma + munição","Qual outra saída poderia ter para aquela situação? Quem quer que estivesse lá fora tomaria chumbo antes que pudesse pensar. A porta cede e um sujeito armado é a primeira coisa que avisto. Era um duelo, quem atirasse primeiro teria o privilégio de sair com vida e assim foi feito. Cada um deu o seu disparo. A prontidão foi a minha grande vantagem, o assassino não esperava ser recebido dessa forma. Dois disparos e apenas uma vítima. A última caça da noite estava caída na minha frente.");
+	final2->itens = criar_vetor_itens(2);
+	append_vetor_itens(final2->itens,arma);
+	append_vetor_itens(final2->itens,municao);
 	
-	append_vetor_finais(finais0,final0);
-	append_vetor_finais(finais0,final1);
-	append_vetor_finais(finais0,final2);
-	append_vetor_finais(finais0,final3);
+	Final *final3 = criar_final(3,"Machado + armadilha","Uma armadilha indiscreta, não foi feita para um homem cair. A não ser que usada do jeito certo. Com um machado em mãos, era questão de imobilizar o alvo antes de tentar me aproximar. O sujeito finalmente abriu a porta. Ele estava armado. No mesmo momento, fiz minha fuga pela janela e deixei a surpresa logo abaixo dela. O homem tentou me perseguir. Ele sabia que eu estava indefeso, mas não esperava pelos dentes de metal que haviam ficado no caminho. Quando ouvi os sons, um estalo e um grito, já sabia o que esperar. Não era mais eu que não tinha para onde fugir. Não houve misericórdia");
+	final3->itens = criar_vetor_itens(2);
+	append_vetor_itens(final3->itens,machado);	
+	append_vetor_itens(final3->itens,armadilha);
 	
-	print_vetor_finais(finais0);
-	print_vetor_itens(final0->itens);
+	Final *final4 = criar_final(4,"Rede + chave","Você alcança a chave do carro. Ao entrar, você arremessa uma rede em direção ao assassino e foge rapidamente pela janela. O tempo ganho é suficiente para escapar com o veículo. Alguns disparos atingem o carro, porém sem efeitos. Você sobrevive");
+	final4->itens = criar_vetor_itens(2);
+	append_vetor_itens(final4->itens,rede);
+	append_vetor_itens(final4->itens,chave);
 	
-	Saida *saida0 = criarSaida(0,"porta",1300,300,200,500);
-	Saida *saida1 = criarSaida(0,"janela",50,300,750,300);
+//	Final *final5 = criar_final(5,"Arma + qualquer item exceto munição"," A melhor companhia de um homem isolado em sua cabana é sua arma. Seu rifle é a primeira coisa que vem à sua cabeça. Você trava a mira na porta, que cede com os trancos do sujeito. Você dispara, fechando os olhos por reflexo. Não há recuo ou som de disparo. Sua arma está descarregada, mas não a dele, que sorri com a cena. Você está morto.");
+//	final5->itens = criar_vetor_itens(2);
+//	append_vetor_itens(final5->itens,arma);
+//	append_vetor_itens(final5->itens,chave);
 	
-	saida0->finais = criar_vetor_finais(6);
-	saida1->finais = criar_vetor_finais(6);
+	Final *final6 = criar_final(6,"nenhum","Quem está lá fora? Não pode ser nada ruim, certo? Não no meio da floresta. Talvez alguém precise de ajuda. Você abre a porta e é recebido com um golpe. Talvez não tenha sido uma boa ideia...");
+	final6->itens = criar_vetor_itens(0);
+//	append_vetor_itens(final6->itens,rede);
+//	append_vetor_itens(final6->itens,chave);
 	
-	append_vetor_finais(saida1->finais,final0);
-	append_vetor_finais(saida1->finais,final1);
-	append_vetor_finais(saida1->finais,final2);
-	append_vetor_finais(saida1->finais,final3);
+//	Final *final7 = criar_final(7,"Chave + qualquer item","Fugir é a única opção. Você pega as chaves de seu carro e desesperadamente tenta fugir pela janela. Ainda que fosse o mais rápido possível, não há como escapar de um sanguinário armado. Antes que chegue no seu carro, tiros são disparados na sua direção. Você está morto.");
+//	final7->itens = criar_vetor_itens(1);
+//	append_vetor_itens(final7->itens,chave);
+//	append_vetor_itens(final7->itens,chave);
 	
-	print_vetor_finais(saida0->finais);
+	Final *final8 = criar_final(8,"Sinalizador + Machado","Numa situação dessas, não podia me privar de pedir ajuda. Era uma emergência a qual nunca tive que lidar. Não era um animal, era uma pessoa, outro ser humano. Alcancei meu machado, disparei meu sinalizador pela janela e me preparei para quem quer que fosse. Mas antes que o sinal pudesse chegar para alguém, o sujeito estava lá dentro. Desprevenido, o que me restava era avançar, mas antes que eu pudesse levantar a lâmina, o sujeito apontou uma arma em minha direção. Não houve misericórdia, meu destino já estava decidido.");
+	final8->itens = criar_vetor_itens(2);
+	append_vetor_itens(final8->itens,sinalizador);
+	append_vetor_itens(final8->itens,machado);
+	
+	Final *final9 = criar_final(9,"Sinalizador + arma","Era a primeira vez que me encontrava em uma situação como essa: ter que caçar um ser humano. Mas era o que o destino pedia. Se fosse assim, que alguém possa me ajudar. Rapidamente disparei o sinalizador para alertar qualquer um que estivesse ao redor. Ao mesmo tempo, a porta cedeu. O homem estava armado e dentro da cabana. À primeira vista que tive, fiz o meu disparo. Não ouve som ou recuo. Cometi um erro que pagaria com a minha vida. Minha arma, que nunca estava vazia, desta vez não tinha um disparo sequer. Era um duelo perdido. Que pelo menos o sinal sirva para encontrarem o meu corpo.");
+	final9->itens = criar_vetor_itens(2);
+	append_vetor_itens(final9->itens,sinalizador);
+	append_vetor_itens(final9->itens,arma);
+	
+	Final *final10 = criar_final(10,"Sinalizador + munição","Eu precisava de ajuda. Um disparo de sinalizador sempre pode alertar qualquer autoridade ao redor, sempre tenho um comigo. Foi o que fiz. Sabia que teria que aguardar qualquer um que pudesse chegar, então teria de me defender. Peguei um punhado de munições e antes que pudesse pensar em alcançar o meu rifle, ouço a porta ceder. O homem estava lá dentro. Uma ideia desastrosa foi a única alternativa que eu tinha: disparar com o sinalizador. Eu sabia como aquilo poderia terminar, mas frente ao outro único final, era a escolha a ser feita. Escondido, coloquei a bala da espingarda no pequeno revolver. Rapidamente, apontei a arma em direção ao assassino e fiz o meu disparo. O desastre foi como pensado. O revolver explodiu em minha mão com um som ensurdecedor. Projéteis se espalharam pela cabana, me atingindo e deixando o homem ileso. Talvez tenha sido a pior ideia que já tive e que me custou o resto da minha vida.");
+	final10->itens = criar_vetor_itens(2);
+	append_vetor_itens(final10->itens,sinalizador);
+	append_vetor_itens(final10->itens,municao);
+	
+	Final *final11 = criar_final(11,"Sinalizador + chave","Não havia como escapar correndo daquela situação. Eu tinha que alcançar o meu carro, mas havia alguém entre mim e o veículo. Eu tinha de criar alguma distração. Numa noite tão escura, cegá-lo poderia ser minha melhor opção. Alcancei o meu sinalizador e a chave do carro. Ouvi a porta ceder. À primeira vista do sujeito, fiz o disparo. A cabana foi preenchida por uma luz e fumaça cegantes. Fiz a minha escolha: avancei em direção ao assassino. Ambos fomos ao chão no meio daquela luz vermelha ofuscante. Me levantei o mais rápido que pude e fui em direção ao carro. Ouvi disparos. O homem estava armado e eu fui atingido. Ainda que tenha conseguido entrar no carro, a dor me fez perder os sentidos e a direção. Foi assim que eu morri.");
+	final11->itens = criar_vetor_itens(2);
+	append_vetor_itens(final11->itens,sinalizador);
+	append_vetor_itens(final11->itens,chave);
+	
+	Final *final12 = criar_final(12,"Sinalizador + rede","Um sinalizador serve unicamente para duas coisas: pedir ajuda ou iniciar uma chama. Com a entrada iminente do homem, uma das duas opções seria a minha escolha. Com uma rede em mãos, imobilizar o sujeito poderia me dar algum tempo. Em poucos instantes, ouço a porta ceder. Preparado para a entrada do homem, atiro a rede em sua direção. Com tudo muito escuro, a única reação do sujeito foi disparar para onde pudesse. Os tiros acertam ao redor da cabana e passam raspando por mim. Em seguida vem o meu: um único disparo que ilumina a cabana em direção ao assassino. O projétil atinge o alvo, as faíscas incendeiam o homem, que coberto pela rede não consegue extinguir. Uma armadilha fatal.");
+	final12->itens = criar_vetor_itens(2);
+	append_vetor_itens(final12->itens,sinalizador);
+	append_vetor_itens(final12->itens,rede);
+	
+	Final *final13 = criar_final(13,"Sinalizador + dinamite","Se para escapar disso eu precisasse levar tudo abaixo, que fosse assim. Era questão de tempo até o sujeito estar aqui dentro e seria recebido da melhor forma possível. Deixei uma única dinamite logo na porta e me afastei. Com o sinalizador em mãos, esperei a entrada do homem. A porta cedeu. No mesmo instante, disparei o sinalizador contra a dinamite. Achei que fosse uma boa ideia. O projétil não foi suficiente para que qualquer coisa acontecesse. O assassino não teve piedade.");
+	final13->itens = criar_vetor_itens(2);
+	append_vetor_itens(final13->itens,sinalizador);
+	append_vetor_itens(final13->itens,rede);
+	
+	Final *final14 = criar_final(14,"Sinalizador + armadilha","Uma armadilha tão indiscreta como essa serviria somente para um cego cair. E seria exatamente essa a minha saída. A coloquei onde o sujeito entraria, em poucos instantes o sujeito estaria aqui dentro. O homem entrou. Ele estava armado. Mas aposto que não esperava ser recebido com um disparo de um sinalizador. Fumaça e luz preencheram a cabana, cegando ambos. Ouvi um som que ouvia muito comumente durante as minhas caçadas: o estalo de uma armadilha sendo disparada. Quando a luz e a fumaça baixaram, lá estava uma presa genuína. Alguém escolheu a toca errada");
+	final14->itens = criar_vetor_itens(2);
+	append_vetor_itens(final14->itens,sinalizador);
+	append_vetor_itens(final14->itens,armadilha);
+	
+	Final *final15 = criar_final(15,"Machado + gasolina","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");
+	final15->itens = criar_vetor_itens(2);
+	append_vetor_itens(final15->itens,machado);
+	append_vetor_itens(final15->itens,gasolina);
+	
+	Final *final16 = criar_final(16,"Machado + arma","Como um bom caçador, minha prioridade era empunhar meu rifle, inseparável. O que quer que estivesse lá fora, seria recebido da melhor forma possível. O sujeito finalmente entrou. Ele estava armado como esperado. Antes que ele pudesse mexer um dedo, fiz o meu disparo. Não houve som, não houve recuo e não houve reação. Meu rifle estava vazio. Um erro que nunca havia cometido e que pagaria com a minha vida. Tentei alcançar o meu machado, a única arma que me sobrou, mas era inútil. A vantagem da distância foi minha condenação.");
+	final16->itens = criar_vetor_itens(2);
+	append_vetor_itens(final16->itens,machado);
+	append_vetor_itens(final16->itens,arma);
+	
+	Final *final17 = criar_final(17,"Machado + munição","Eu sabia que só havia uma coisa a se fazer. Minha primeira reação foi recorrer a um tiro em quem quer que estivesse lá fora. Encontrei a munição, mas antes que eu pudesse alcançar o rifle, a porta cedeu. Ele estava armado, eu não. Meu machado era a coisa mais próxima a mim, mas a distância não me favorecia. Não havia como escapar do destino");
+	final17->itens = criar_vetor_itens(2);
+	append_vetor_itens(final17->itens,machado);
+	append_vetor_itens(final17->itens,municao);
+	
+	Final *final18 = criar_final(18,"Machado + rede","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");
+	final18->itens = criar_vetor_itens(2);
+	append_vetor_itens(final18->itens,machado);
+	append_vetor_itens(final18->itens,rede);
+	
+	Final *final19 = criar_final(19,"Gasolina + arma","Explodir meu caminho para fora de uma situação me parece razoável quando não há coisa ao meu redor que possa me salvar. Um tanque de combustível e uma bala é tudo o que preciso para acabar com quem quer que esteja do outro lado da porta. Rapidamente coloco o galão ali e sem esperar que a porta abra, preparo o meu tiro. Faço o disparo ao mesmo tempo em que a porta é aberta. Não há som ou recuo. A arma estava vazia. Como pude cometer um erro tão grotesco? Antes que tenha tempo de me lamentar, sou recebido com disparos em minha direção.");
+	final19->itens = criar_vetor_itens(2);
+	append_vetor_itens(final19->itens,gasolina);
+	append_vetor_itens(final19->itens,arma);
+	
+	Final *final20 = criar_final(20,"Gasolina + munição","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");
+	final20->itens = criar_vetor_itens(2);
+	append_vetor_itens(final20->itens,gasolina);
+	append_vetor_itens(final20->itens,municao);
+	
+	Final *final21 = criar_final(21,"Gasolina + rede","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");
+	final21->itens = criar_vetor_itens(2);
+	append_vetor_itens(final21->itens,gasolina);
+	append_vetor_itens(final21->itens,rede);
+	
+	Final *final22 = criar_final(22,"Munição + armadilha","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");
+	final22->itens = criar_vetor_itens(2);
+	append_vetor_itens(final22->itens,armadilha);
+	append_vetor_itens(final22->itens,municao);
+	
+	Final *final23 = criar_final(23,"Munição + rede","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");	
+	final23->itens = criar_vetor_itens(2);
+	append_vetor_itens(final23->itens,rede);
+	append_vetor_itens(final23->itens,municao);
+	
+	Final *final_generico = criar_final(23,"generico","Os poucos instantes entre as batidas e a entrada do homem me pegaram desprevenidos. Tentei pegar as primeiras coisas que vi pela frente, mas por fim, só ocupei minhas mãos sem que pudesse fazer nada. A porta cedeu e em segundos vieram os disparos. Foi o meu fim.");	
+	
+	Saida *saida0 = criarSaida(0,"porta",920,200,150,400);
+//	Saida *saida1 = criarSaida(0,"janela",50,300,750,300);
+	
+	saida0->finais = criar_vetor_finais(24);
+//	saida1->finais = criar_vetor_finais(6);
+	
+	append_vetor_finais(saida0->finais,final0);
+	append_vetor_finais(saida0->finais,final1);
+	append_vetor_finais(saida0->finais,final3);
+	append_vetor_finais(saida0->finais,final3);
+	append_vetor_finais(saida0->finais,final4);
+//	append_vetor_finais(saida0->finais,final5);
+	append_vetor_finais(saida0->finais,final6);
+//	append_vetor_finais(saida0->finais,final7);
+	append_vetor_finais(saida0->finais,final8);
+	append_vetor_finais(saida0->finais,final9);
+	append_vetor_finais(saida0->finais,final10);
+	append_vetor_finais(saida0->finais,final11);
+	append_vetor_finais(saida0->finais,final12);
+	append_vetor_finais(saida0->finais,final13);
+	append_vetor_finais(saida0->finais,final14);
+	append_vetor_finais(saida0->finais,final15);
+	append_vetor_finais(saida0->finais,final16);
+	append_vetor_finais(saida0->finais,final17);
+	append_vetor_finais(saida0->finais,final18);
+	append_vetor_finais(saida0->finais,final19);
+	append_vetor_finais(saida0->finais,final20);
+	append_vetor_finais(saida0->finais,final21);
+	append_vetor_finais(saida0->finais,final22);
+	append_vetor_finais(saida0->finais,final23);
+	append_vetor_finais(saida0->finais,final_generico);
 	
 	void *img_cam0 = load_image("quarto0.bmp",LarTela,AltTela,0,0);
 	void *img_cam1 = load_image("quarto1.bmp",LarTela,AltTela,0,0);
@@ -1082,7 +1133,6 @@ int comecaJogo(){
 	TCamera *camera1 = criarCamera(1,img_cam1);
 	
 	TCamera *camera2 = criarCamera(2,img_cam2);
-	camera2->saida = saida1;
 	
 	TCamera *camera3 = criarCamera(3,img_cam3);
  	
@@ -1101,14 +1151,14 @@ int comecaJogo(){
  	cameras[2].itens = criar_vetor_itens(20);
  	cameras[3].itens = criar_vetor_itens(20);
  	
- 	append_vetor_itens(cameras[0].itens,dinamite1);
- 	append_vetor_itens(cameras[0].itens,dinamite2);
- 	append_vetor_itens(cameras[1].itens,dinamite3);
- 	append_vetor_itens(cameras[3].itens,dinamite4);
-	append_vetor_itens(cameras[1].itens,dinamite5);
-	append_vetor_itens(cameras[3].itens,dinamite6);
-	
-	print_vetor_finais(saida0->finais);
+ 	append_vetor_itens(cameras[0].itens,fosforo);
+ 	append_vetor_itens(cameras[0].itens,gasolina);
+ 	append_vetor_itens(cameras[2].itens,machado);
+ 	append_vetor_itens(cameras[2].itens,sinalizador);
+ 	append_vetor_itens(cameras[1].itens,chave);
+ 	append_vetor_itens(cameras[3].itens,rede);
+	append_vetor_itens(cameras[1].itens,armadilha);
+	append_vetor_itens(cameras[3].itens,arma);
 	
  	while(true) {
  		gt2 = GetTickCount();
@@ -1118,7 +1168,7 @@ int comecaJogo(){
  			setvisualpage(pg);
  			cleardevice();
  			
- 			mudarDeCamera(&camera_atual,&tecla);
+ 			mudarDeCamera(&camera_atual,&tecla,gt2,&tc2,&mudou);
 
  			mostrarCamera(&cameras[camera_atual]);
 			mostrarItensCamera(&cameras[camera_atual]);
@@ -1129,10 +1179,10 @@ int comecaJogo(){
 			mostraTempo(tempo,hud_tempo,hud_tempo_mask);
 			executaSom(&ts1);
 			colisaoMouseItens(cameras[camera_atual],inventario);
-			colisaoMouseSaidas(cameras[camera_atual],inventario);
+			colisaoMouseSaidas(cameras[camera_atual],inventario,*final_generico);
 			
 			if(((gt2 - tempo) /1000) > 15) {
-				Conclusao(Final(*final0));
+				Conclusao(Final(*final6));
 			}
 			
  			setactivepage(pg);
@@ -1152,9 +1202,7 @@ int comecaJogo(){
 	apaga_vetor_itens(&final0->itens);
 	
 	apaga_vetor_finais(&saida0->finais);
-	apaga_vetor_finais(&saida1->finais);
 	free(saida0);
-	free(saida1);
 	apaga_vetor_itens(&cameras[0].itens);
  	free(cameras);
 	return 0;
@@ -1210,6 +1258,10 @@ int Menu(){
     
     LarTela = 1280;
 	AltTela = 720;
+	
+	mciSendString("open .\\Audios\\MusicaTema.mp3 type MPEGVideo alias Tema", NULL, 0, 0);
+	waveOutSetVolume(0,0xFFFFFFFF);
+	mciSendString("play Tema repeat", NULL, 0, 0);
     
     void *botao1_img = load_image(".\\Hud\\Iniciar1.bmp",206,74,0,0);
 	void *botao1_mask = load_image(".\\Hud\\Iniciar1WB.bmp",206,74,0,0);
@@ -1270,15 +1322,6 @@ int Menu(){
 	return 0;
 }
 
-//TItem *chave = criarItem(1,"chave","chave.bmp","chave_pb.bmp",200,200,100,100);
-//TItem *gasolina = criarItem(2,"gasolina","gasolina.bmp","gasolina_pb.bmp",400,600,50,100);
-//TItem *rifle = criarItem(3,"rifle","rifle.bmp","rifle_pb.bmp",400,600,50,100);
-//TItem *bala = criarItem(4,"bala","bala.bmp","bala_pb.bmp",400,600,50,100);
-//TItem *celular = criarItem(5,"celular","celular.bmp","celular_pb.bmp",400,600,50,100);
-//TItem *machado = criarItem(6,"machado","machado.bmp","machado_pg.bmp",400,600,50,100);
-//TItem *fosforo = criarItem(7,"fosforo","fosforo.bmp","fosforo_pb.bmp",400,600,50,100);
-//TItem *armadilha = criarItem(8,"armadilha","armadilha.bmp","armadilha_pb.bmp",400,600,50,100);
-
 int main() {
 	
 	int LarTela = 1280;
@@ -1287,7 +1330,6 @@ int main() {
 	setlocale(LC_ALL,"Portuguese");
 	initwindow(LarTela, AltTela,"meu jogo");
 	Menu();
-	TMouse *mouse = mousePos();
  	closegraph();
 	return 0;
 }
