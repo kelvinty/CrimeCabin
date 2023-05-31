@@ -181,12 +181,13 @@ void animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y) {
 
 	for(int i = 0; i < qtdLinhas; i++) {
 		free(linha[i]);	
+		print
 	}
 	
 	free(linha);
 	linha = NULL;
 	free(newStr);
-	delay(2000);
+//	delay(2000);
 	return;
 }
 
