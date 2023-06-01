@@ -233,7 +233,7 @@ void append_vetor_itens(ItensVetor *vec, Item *item){
 	vec->tamanho++;
 }
 
-void compara_vetor_itens(Final final,const ItensVetor *vec_inventario,Final generico){
+int compara_vetor_itens(Final final,const ItensVetor *vec_inventario){
 	int count = 0;
 	
 	ItensVetor *vec_final = final.itens;
@@ -248,16 +248,7 @@ void compara_vetor_itens(Final final,const ItensVetor *vec_inventario,Final gene
 			} 
 		}
 	}
-	printf("count intens ok:%d", count);
-	if(count == 2){
-		printf("foi para o final:%d", final.descricao);
-		Conclusao(final);
-	} 
-//else {
-//		printf("foi para o generico");
-//		Conclusao(generico);
-//	}
-	return;
+	return count;
 }
 
 void remove_item_vetor(ItensVetor *vec,Item *item){
@@ -685,10 +676,19 @@ void colisaoMouseSaidas(TCamera camera, TInventario *inventario,Final generico) 
 			delay(50);
 			
     		if(GetKeyState(VK_LBUTTON)&0x80){
+    			int contador = 0;
 				printf("clicou na saida : %s\n", saida->nome);			
     			for(int i = 0;i< saida->finais->tamanho; i++){
-    				compara_vetor_itens(saida->finais->finais[i],inventario->itens,generico);
+    				Final final = saida->finais->finais[i];
+    				contador = compara_vetor_itens(final,inventario->itens);
+    				if(contador == 2){
+						printf("foi para o final:%s\n", final.descricao);
+						Conclusao(final);
+					} 
+					printf("terminou de passar os final %d \n",i);
 				}
+				Conclusao(generico);
+				return;
 			}	
 		}	
 	}	
@@ -1197,6 +1197,11 @@ int comecaJogo(){
 	void* item9_mini = load_image(".\\Itens\\inventario\\municao.BMP",100,100,0,0);
 	void* item9_mini_mask = load_image(".\\Itens\\inventario\\municaoWB.BMP",100,100,0,0);
 	
+	void* item10_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item10_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item10_mini = load_image(".\\Itens\\inventario\\corda.BMP",100,100,0,0);
+	void* item10_mini_mask = load_image(".\\Itens\\inventario\\cordaWB.BMP",100,100,0,0);
+	
 	Item *sinalizador = criar_item(0,"sinalizador",item1_img,item1_mask,item0_mini,item0_mini_mask,200,200,100,100);
     Item *gasolina = criar_item(1,"gasolina",item1_img,item1_mask,item1_mini,item1_mini_mask,300,200,100,100);
     Item *fosforo = criar_item(2,"fosforo",item2_img,item2_mask,item2_mini,item2_mini_mask,400,200,100,100);
@@ -1207,6 +1212,7 @@ int comecaJogo(){
     Item *arma = criar_item(7,"arma",item7_img,item7_mask,item7_mini,item7_mini_mask,930,450,300,200);
     Item *dinamite = criar_item(8,"dinamite",item8_img,item8_mask,item8_mini,item8_mini_mask,600,400,100,100);
     Item *municao = criar_item(9,"municao",item9_img,item9_mask,item9_mini,item9_mini_mask,600,400,100,100);
+    Item *corda = criar_item(10,"corda",item10_img,item10_mask,item10_mini,item10_mini_mask,500,400,100,100);
     
 	Final *final0 = criar_final(0,"Sinalizador + Gasolina","A situação exigia que a única prioridade fosse a minha vida. Se tudo tivesse que ser consumido pelo fogo para que eu escapasse daquele lugar, assim seria. Espalhei o combustível que eu tinha pela porta e de longe esperei pela entrada do sujeito. Em poucos instantes, a porta cedeu. O homem armado só não esperava receber um tiro de sinalizador assim que colocou os pés dentro da minha cabana. O disparo explodiu em uma bola de fogo no momento em que encostou no líquido. Eu assisti tudo pegar fogo, inclusive o sujeito e escapei pela janela. Era o fim da minha velha cabana, mas era o fim de um assassino e de uma noite que nunca será esquecida Você sobrevive.");
 	final0->itens = criar_vetor_itens(2);
@@ -1233,20 +1239,10 @@ int comecaJogo(){
 	append_vetor_itens(final4->itens,rede);
 	append_vetor_itens(final4->itens,chave);
 	
-//	Final *final5 = criar_final(5,"Arma + qualquer item exceto munição"," A melhor companhia de um homem isolado em sua cabana é sua arma. Seu rifle é a primeira coisa que vem à sua cabeça. Você trava a mira na porta, que cede com os trancos do sujeito. Você dispara, fechando os olhos por reflexo. Não há recuo ou som de disparo. Sua arma está descarregada, mas não a dele, que sorri com a cena. Você está morto.");
-//	final5->itens = criar_vetor_itens(2);
-//	append_vetor_itens(final5->itens,arma);
-//	append_vetor_itens(final5->itens,chave);
-	
+
 	Final *final6 = criar_final(6,"nenhum","Quem está lá fora? Não pode ser nada ruim, certo? Não no meio da floresta. Talvez alguém precise de ajuda. Você abre a porta e é recebido com um golpe. Talvez não tenha sido uma boa ideia...");
 	final6->itens = criar_vetor_itens(0);
-//	append_vetor_itens(final6->itens,rede);
-//	append_vetor_itens(final6->itens,chave);
-	
-//	Final *final7 = criar_final(7,"Chave + qualquer item","Fugir é a única opção. Você pega as chaves de seu carro e desesperadamente tenta fugir pela janela. Ainda que fosse o mais rápido possível, não há como escapar de um sanguinário armado. Antes que chegue no seu carro, tiros são disparados na sua direção. Você está morto.");
-//	final7->itens = criar_vetor_itens(1);
-//	append_vetor_itens(final7->itens,chave);
-//	append_vetor_itens(final7->itens,chave);
+
 	
 	Final *final8 = criar_final(8,"Sinalizador + Machado","Numa situação dessas, não podia me privar de pedir ajuda. Era uma emergência a qual nunca tive que lidar. Não era um animal, era uma pessoa, outro ser humano. Alcancei meu machado, disparei meu sinalizador pela janela e me preparei para quem quer que fosse. Mas antes que o sinal pudesse chegar para alguém, o sujeito estava lá dentro. Desprevenido, o que me restava era avançar, mas antes que eu pudesse levantar a lâmina, o sujeito apontou uma arma em minha direção. Não houve misericórdia, meu destino já estava decidido.");
 	final8->itens = criar_vetor_itens(2);
@@ -1339,11 +1335,8 @@ int comecaJogo(){
 	append_vetor_finais(saida0->finais,final0);
 	append_vetor_finais(saida0->finais,final1);
 	append_vetor_finais(saida0->finais,final3);
-	append_vetor_finais(saida0->finais,final3);
 	append_vetor_finais(saida0->finais,final4);
-//	append_vetor_finais(saida0->finais,final5);
 	append_vetor_finais(saida0->finais,final6);
-//	append_vetor_finais(saida0->finais,final7);
 	append_vetor_finais(saida0->finais,final8);
 	append_vetor_finais(saida0->finais,final9);
 	append_vetor_finais(saida0->finais,final10);
@@ -1360,7 +1353,6 @@ int comecaJogo(){
 	append_vetor_finais(saida0->finais,final21);
 	append_vetor_finais(saida0->finais,final22);
 	append_vetor_finais(saida0->finais,final23);
-	append_vetor_finais(saida0->finais,final_generico);
 	
 	void *img_cam0 = load_image("quarto0.bmp",LarTela,AltTela,0,0);
 	void *img_cam1 = load_image("quarto1.bmp",LarTela,AltTela,0,0);
@@ -1399,6 +1391,7 @@ int comecaJogo(){
  	append_vetor_itens(cameras[3].itens,rede);
 	append_vetor_itens(cameras[1].itens,armadilha);
 	append_vetor_itens(cameras[3].itens,arma);
+	append_vetor_itens(cameras[3].itens,corda);
 	
  	while(true) {
  		gt2 = GetTickCount();
