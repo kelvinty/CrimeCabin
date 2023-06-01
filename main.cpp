@@ -35,6 +35,8 @@ typedef struct item{
 	char *nome;
 	void *imagem;
 	void *mascara;
+	void *mini_imagem;
+	void *mini_mascara;
 	int x;
 	int y;
 	int largura;
@@ -170,13 +172,15 @@ void deleteImage(void *image){
 	free(image);
 }
 
-Item *criar_item(int id, char *nome,void *imagem, void *mascara, int x, int y, int largura, int altura) {
+Item *criar_item(int id, char *nome, void *imagem, void *mascara, void*mini, void*mini_mask, int x, int y, int largura, int altura) {
 	Item *item = (Item*)malloc(sizeof(Item));
 	
 	item->id = id;
 	item->nome = nome;
 	item->imagem = imagem;
 	item->mascara = mascara;
+	item->mini_imagem = mini;
+	item->mini_mascara = mini_mask;
 	item->x = x;
 	item->y = y;
 	item->largura = largura;
@@ -238,16 +242,21 @@ void compara_vetor_itens(Final final,const ItensVetor *vec_inventario,Final gene
 		Item item_final = vec_final->itens[i];
 		for(int j = 0;j < vec_inventario->tamanho; j++){
 			Item item_inventario = vec_inventario->itens[j];
+			printf("item final id:%d , item final inventario: %d\n",item_final.id,item_inventario.id);
 			if(item_final.id == item_inventario.id){
 				count++;
 			} 
 		}
 	}
+	printf("count intens ok:%d", count);
 	if(count == 2){
+		printf("foi para o final:%d", final.descricao);
 		Conclusao(final);
-	} else {
-		Conclusao(generico);
-	}
+	} 
+//else {
+//		printf("foi para o generico");
+//		Conclusao(generico);
+//	}
 	return;
 }
 
@@ -435,8 +444,8 @@ void mostrarCamera(const TCamera *camera) {
 void mostrarItensCamera(const TCamera *camera) {
 	for(int i =0;i < camera->itens->tamanho;i++) {
 		Item item = camera->itens->itens[i]; 
-		putimage(item.x, item.y, item.mascara, AND_PUT);
-		putimage(item.x, item.y, item.imagem, OR_PUT);
+		putimage(0, 0, item.mascara, AND_PUT);
+		putimage(0, 0, item.imagem, OR_PUT);
 	}
 }
 
@@ -455,8 +464,8 @@ void mostrarInventario(const TInventario *inventario,void *img) {
 void mostrarItensInventario(const TInventario *inventario) {
 	for(int i =0;i < inventario->itens->tamanho;i++) {
 		Item item = inventario->itens->itens[i]; 
-		putimage(inventario->x, inventario->y + item.altura*i, item.mascara, AND_PUT);
-		putimage(inventario->x, inventario->y + item.altura*i, item.imagem, OR_PUT);
+		putimage(inventario->x, inventario->y + item.altura*i, item.mini_mascara, AND_PUT);
+		putimage(inventario->x, inventario->y + item.altura*i, item.mini_imagem, OR_PUT);
 	}
 }
 
@@ -636,8 +645,11 @@ void colisaoMouseItens(TCamera camera, TInventario *inventario) {
   	
 	for(int i = 0;i<camera.itens->tamanho;i++) {
 		Item item = camera.itens->itens[i];
-
+		rectangle(item.x,item.y,item.largura+item.x,item.altura+item.y);
+	
+		
 		if (P.x < item.x + item.largura && P.x > item.x && P.y < item.y + item.altura && P.y > item.y) {
+			printf("x:%d, y:%d, item:%s \n", item.x,item.y,item.nome);
 			int largura_texto = textwidth(item.nome);
 			outtextxy(item.x + ((item.largura/2) - (largura_texto/2)), item.y+item.altura,item.nome);
 			delay(50);
@@ -894,13 +906,14 @@ int animacao_splash()  {
 		cleardevice();
 		int indi = ceil(j);
       	putimage(0, 0, t[indi], COPY_PUT);
-      	j+=0.1;
+      	j+=0.12;
       	if(indi == 74/2){
       		mciSendString("seek Corvo to start", NULL, 0, 0);
    			mciSendString("play Corvo", NULL, 0, 0);
 		}
       	setactivepage(pg);
     }
+    
     mciSendString("stop Corvo", NULL, 0, 0);
   	return 0; 
 }
@@ -1131,64 +1144,69 @@ int comecaJogo(){
 	
 	void* hud_tempo = load_image(".\\Hud\\Relogio.bmp",150,75,0,0);
 	void* hud_tempo_mask = load_image(".\\Hud\\RelogioWB.bmp",150,75,0,0);
-	
 	void* hud_inventario = load_image(".\\Hud\\Inventario.bmp",100,200,0,0);
 	
-	void* item1_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item1_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item1_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item1_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
 	
-	void* item2_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item2_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item2_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item2_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item0_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item0_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item0_mini = load_image(".\\Itens\\inventario\\sinalizador.BMP",100,100,0,0);
+	void* item0_mini_mask = load_image(".\\Itens\\inventario\\sinalizadorWB.BMP",100,100,0,0);
 	
-	void* item3_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item3_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item3_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item3_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item1_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item1_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item1_mini = load_image(".\\Itens\\inventario\\gasolina.BMP",100,100,0,0);
+	void* item1_mini_mask = load_image(".\\Itens\\inventario\\gasolinaWB.BMP",100,100,0,0);
 	
-	void* item4_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item4_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item4_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item4_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item2_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item2_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item2_mini = load_image(".\\Itens\\inventario\\fosforo.BMP",100,100,0,0);
+	void* item2_mini_mask = load_image(".\\Itens\\inventario\\fosforoWB.BMP",100,100,0,0);
 	
-	void* item5_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item5_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item5_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item5_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item3_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item3_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item3_mini = load_image(".\\Itens\\inventario\\armadilha.BMP",100,100,0,0);
+	void* item3_mini_mask = load_image(".\\Itens\\inventario\\armadilhaWB.BMP",100,100,0,0);
 	
-	void* item6_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item6_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item6_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item6_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item4_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item4_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item4_mini = load_image(".\\Itens\\inventario\\machado.BMP",100,100,0,0);
+	void* item4_mini_mask = load_image(".\\Itens\\inventario\\machadoWB.BMP",100,100,0,0);
 	
-	void* item7_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item7_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item7_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item7_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item5_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item5_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item5_mini = load_image(".\\Itens\\inventario\\rede.BMP",100,100,0,0);
+	void* item5_mini_mask = load_image(".\\Itens\\inventario\\redeWB.BMP",100,100,0,0);
 	
-	void* item8_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item8_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item8_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item8_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item6_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item6_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item6_mini = load_image(".\\Itens\\inventario\\chave.BMP",100,100,0,0);
+	void* item6_mini_mask = load_image(".\\Itens\\inventario\\chaveWB.BMP",100,100,0,0);
 	
-	void* item9_img = load_image("dinamite.bmp",150,150,200,200);
-	void* item9_mask = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item9_mini = load_image("dinamite_pb.bmp",150,150,200,200);
-	void* item9_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item7_img = load_image(".\\Itens\\camera\\arma.BMP",1280,720,0,0);
+	void* item7_mask = load_image(".\\Itens\\camera\\armaWB.BMP",1280,720,0,0);
+	void* item7_mini = load_image(".\\Itens\\inventario\\arma.BMP",100,100,0,0);
+	void* item7_mini_mask = load_image(".\\Itens\\inventario\\armaWB.BMP",100,100,0,0);
 	
-	Item *sinalizador = criar_item(0,"sinalizador",item1_img,item1_mask,200,200,50,50);
-    Item *gasolina = criar_item(1,"gasolina",item1_img,item1_mask,300,200,50,50);
-    Item *fosforo = criar_item(2,"fosforo",item1_img,item1_mask,400,200,100,100);
-    Item *armadilha = criar_item(3,"armadilha",item1_img,item1_mask,500,200,100,100);
-    Item *machado = criar_item(4,"machado",item1_img,item1_mask,600,200,100,100);
-    Item *rede = criar_item(5,"rede",item1_img,item1_mask,700,200,100,100);
-    Item *chave = criar_item(6,"chave",item1_img,item1_mask,900,200,100,100);
-    Item *arma = criar_item(7,"arma",item1_img,item1_mask,600,400,100,100);
-    Item *dinamite = criar_item(8,"dinamite",item1_img,item1_mask,600,400,100,100);
-    Item *municao = criar_item(9,"municao",item1_img,item1_mask,600,400,100,100);
+	void* item8_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item8_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item8_mini = load_image(".\\Itens\\inventario\\dinamite.BMP",100,100,0,0);
+	void* item8_mini_mask = load_image(".\\Itens\\inventario\\dinamiteWB.BMP",100,100,0,0);
+	
+	void* item9_img = load_image("dinamite.bmp",100,100,0,0);
+	void* item9_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item9_mini = load_image(".\\Itens\\inventario\\municao.BMP",100,100,0,0);
+	void* item9_mini_mask = load_image(".\\Itens\\inventario\\municaoWB.BMP",100,100,0,0);
+	
+	Item *sinalizador = criar_item(0,"sinalizador",item1_img,item1_mask,item0_mini,item0_mini_mask,200,200,100,100);
+    Item *gasolina = criar_item(1,"gasolina",item1_img,item1_mask,item1_mini,item1_mini_mask,300,200,100,100);
+    Item *fosforo = criar_item(2,"fosforo",item2_img,item2_mask,item2_mini,item2_mini_mask,400,200,100,100);
+    Item *armadilha = criar_item(3,"armadilha",item3_img,item3_mask,item3_mini,item3_mini_mask,500,200,100,100);
+    Item *machado = criar_item(4,"machado",item4_img,item4_mask,item4_mini,item4_mini_mask,600,200,100,100);
+    Item *rede = criar_item(5,"rede",item5_img,item5_mask,item5_mini,item5_mini_mask,700,200,100,100);
+    Item *chave = criar_item(6,"chave",item6_img,item6_mask,item6_mini,item6_mini_mask,900,200,100,100);
+    Item *arma = criar_item(7,"arma",item7_img,item7_mask,item7_mini,item7_mini_mask,930,450,300,200);
+    Item *dinamite = criar_item(8,"dinamite",item8_img,item8_mask,item8_mini,item8_mini_mask,600,400,100,100);
+    Item *municao = criar_item(9,"municao",item9_img,item9_mask,item9_mini,item9_mini_mask,600,400,100,100);
     
 	Final *final0 = criar_final(0,"Sinalizador + Gasolina","A situação exigia que a única prioridade fosse a minha vida. Se tudo tivesse que ser consumido pelo fogo para que eu escapasse daquele lugar, assim seria. Espalhei o combustível que eu tinha pela porta e de longe esperei pela entrada do sujeito. Em poucos instantes, a porta cedeu. O homem armado só não esperava receber um tiro de sinalizador assim que colocou os pés dentro da minha cabana. O disparo explodiu em uma bola de fogo no momento em que encostou no líquido. Eu assisti tudo pegar fogo, inclusive o sujeito e escapei pela janela. Era o fim da minha velha cabana, mas era o fim de um assassino e de uma noite que nunca será esquecida Você sobrevive.");
 	final0->itens = criar_vetor_itens(2);
