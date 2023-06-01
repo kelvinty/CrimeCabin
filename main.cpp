@@ -1497,11 +1497,11 @@ int Menu(){
 	void *botao4_img = load_image(".\\Hud\\Sair1.bmp",142,74,0,0);
 	void *botao4_mask = load_image(".\\Hud\\Sair1WB.bmp",142,74,0,0);
     
-    Botao *botao_iniciar = criar_botao("iniciar",botao1_img,botao1_mask,LarTela/2 - 206/2,AltTela/2 + 75,206,74);
+    Botao *botao_iniciar = criar_botao("iniciar",botao1_img,botao1_mask,LarTela/2 - 206/2,AltTela/2 + 105,206,74);
 
-    Botao *botao_intro = criar_botao("intro",botao3_img,botao3_mask,LarTela/2 - 330/2,AltTela/2 +150,330,80); 
+    Botao *botao_intro = criar_botao("intro",botao3_img,botao3_mask,LarTela/2 - 330/2,AltTela/2 +190,330,80); 
 
-    Botao *botao_sair = criar_botao("sair",botao4_img,botao4_mask,LarTela/2 - 142/2,AltTela/2+240,142,74); 
+    Botao *botao_sair = criar_botao("sair",botao4_img,botao4_mask,LarTela/2 - 142/2,AltTela/2+280,142,74); 
 	
 	BotoesVetor *botoes = criar_vetor_botoes(3);
 	
@@ -1556,7 +1556,7 @@ int main() {
 	if(pg == 1) pg = 2; else pg = 1;
 	setvisualpage(pg);
 	cleardevice();
-	animacao_splash();
+  	animacao_splash();
 	setactivepage(pg);
 	Menu();
 
