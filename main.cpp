@@ -87,7 +87,7 @@ struct TCamera {
 };
 
 //VARIAVEIS GLOBAIS
-int pg = 1;
+//int pg = 1;
 int last_time = clock();
 
 //Loops do jogo;
@@ -117,7 +117,7 @@ int strlen(char *str)
 }
 
 int animacao_texto(char *texto,int quebra_linha,int qtd,int pos_x,int pos_y,unsigned long long int ts1) {
-	
+	int pg = 1;
 	unsigned long long int ts2 = GetTickCount();
 	
 	double larguraString = textwidth(texto);
@@ -559,7 +559,7 @@ bool verificaMouseClick() {
 void pegarItem(Item *_item, TCamera *camera, TInventario *inventario){
 	unsigned long long int ts1 = GetTickCount();
 	unsigned long long int ts2 = GetTickCount();
-	
+	int pg = 1;
 	for(int i = 0;i<camera->itens->tamanho;i++){
 		Item item = camera->itens->itens[i];
 		if(item.id == _item->id){
@@ -727,9 +727,187 @@ void mudarDeCamera(int *camera_atual,char *tecla,unsigned long long int tempo,un
 
 unsigned long long int gt1 = GetTickCount();
 
+int animacao_splash()  { 
+  	int pg, Logo;
+  	void **t = (void **) malloc(sizeof(void *) *80); 
+	                                       
+  	Logo = imagesize(0, 0, 1280,720);	
+
+  	for(int i = 0; i < 80; i++) {
+    	t[i] = malloc(Logo);
+	}
+	
+	readimagefile(".\\Splash2\\lunar_00001.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[0]);
+	readimagefile(".\\Splash2\\lunar_00002.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[1]);
+    readimagefile(".\\Splash2\\lunar_00003.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[2]);
+    readimagefile(".\\Splash2\\lunar_00004.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[3]);
+    readimagefile(".\\Splash2\\lunar_00005.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[4]);
+    readimagefile(".\\Splash2\\lunar_00006.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[5]);
+    readimagefile(".\\Splash2\\lunar_00007.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[6]);
+    readimagefile(".\\Splash2\\lunar_00008.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[7]);
+    readimagefile(".\\Splash2\\lunar_00009.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[8]);
+    readimagefile(".\\Splash2\\lunar_00010.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[9]);
+    readimagefile(".\\Splash2\\lunar_00011.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[10]);
+    readimagefile(".\\Splash2\\lunar_00012.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[11]);
+    readimagefile(".\\Splash2\\lunar_00013.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[12]);
+    readimagefile(".\\Splash2\\lunar_00014.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[13]);
+    readimagefile(".\\Splash2\\lunar_00015.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[14]);
+    readimagefile(".\\Splash2\\lunar_00016.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[15]);
+    readimagefile(".\\Splash2\\lunar_00017.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[16]);
+    readimagefile(".\\Splash2\\lunar_00018.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[17]);
+    readimagefile(".\\Splash2\\lunar_00019.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[18]);
+    readimagefile(".\\Splash2\\lunar_00020.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[19]);
+    readimagefile(".\\Splash2\\lunar_00021.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[20]);
+    readimagefile(".\\Splash2\\lunar_00022.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[21]);
+    readimagefile(".\\Splash2\\lunar_00023.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[22]);
+    readimagefile(".\\Splash2\\lunar_00024.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[23]);
+    readimagefile(".\\Splash2\\lunar_00025.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[24]);
+    readimagefile(".\\Splash2\\lunar_00026.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[25]);
+    readimagefile(".\\Splash2\\lunar_00027.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[26]);
+    readimagefile(".\\Splash2\\lunar_00028.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[27]);
+    readimagefile(".\\Splash2\\lunar_00029.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[28]);
+    readimagefile(".\\Splash2\\lunar_00030.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[29]);
+    readimagefile(".\\Splash2\\lunar_00031.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[30]);
+    readimagefile(".\\Splash2\\lunar_00032.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[31]);
+    readimagefile(".\\Splash2\\lunar_00033.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[32]);
+    readimagefile(".\\Splash2\\lunar_00034.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[33]);
+    readimagefile(".\\Splash2\\lunar_00035.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[34]);
+    readimagefile(".\\Splash2\\lunar_00036.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[35]);
+    readimagefile(".\\Splash2\\lunar_00037.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[36]);
+    readimagefile(".\\Splash2\\lunar_00038.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[37]);
+    readimagefile(".\\Splash2\\lunar_00039.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[38]);
+    readimagefile(".\\Splash2\\lunar_00040.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[39]);
+    readimagefile(".\\Splash2\\lunar_00041.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[40]);
+    readimagefile(".\\Splash2\\lunar_00042.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[41]);
+    readimagefile(".\\Splash2\\lunar_00043.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[42]);
+    readimagefile(".\\Splash2\\lunar_00044.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[43]);
+    readimagefile(".\\Splash2\\lunar_00045.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[44]);
+    readimagefile(".\\Splash2\\lunar_00046.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[45]);
+    readimagefile(".\\Splash2\\lunar_00047.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[46]);
+    readimagefile(".\\Splash2\\lunar_00048.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[47]);
+    readimagefile(".\\Splash2\\lunar_00049.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[48]);
+    readimagefile(".\\Splash2\\lunar_00050.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[49]);
+    readimagefile(".\\Splash2\\lunar_00051.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[50]);
+    readimagefile(".\\Splash2\\lunar_00052.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[51]);
+    readimagefile(".\\Splash2\\lunar_00053.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[52]);
+    readimagefile(".\\Splash2\\lunar_00054.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[53]);
+    readimagefile(".\\Splash2\\lunar_00055.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[54]);
+    readimagefile(".\\Splash2\\lunar_00056.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[55]);
+    readimagefile(".\\Splash2\\lunar_00057.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[56]);
+    readimagefile(".\\Splash2\\lunar_00058.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[57]);
+    readimagefile(".\\Splash2\\lunar_00059.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[58]);
+    readimagefile(".\\Splash2\\lunar_00060.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[59]);
+    readimagefile(".\\Splash2\\lunar_00061.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[60]);
+    readimagefile(".\\Splash2\\lunar_00062.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[61]);
+    readimagefile(".\\Splash2\\lunar_00063.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[62]);
+    readimagefile(".\\Splash2\\lunar_00064.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[63]);
+    readimagefile(".\\Splash2\\lunar_00065.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[64]);
+    readimagefile(".\\Splash2\\lunar_00066.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[65]);
+    readimagefile(".\\Splash2\\lunar_00067.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[66]);
+    readimagefile(".\\Splash2\\lunar_00066.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[67]);
+    readimagefile(".\\Splash2\\lunar_00069.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[68]);
+    readimagefile(".\\Splash2\\lunar_00070.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[69]);
+    readimagefile(".\\Splash2\\lunar_00071.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[70]);
+    readimagefile(".\\Splash2\\lunar_00072.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[71]);
+    readimagefile(".\\Splash2\\lunar_00073.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[72]);
+    readimagefile(".\\Splash2\\lunar_00074.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[73]);
+    readimagefile(".\\Splash2\\lunar_00075.BMP",0,0,1280,720);
+    getimage(0,0,1280,720, t[74]);
+	
+    for(double j = 0; j < 74;) {
+    	if (pg == 1) pg = 2; else pg=1;
+		setvisualpage(pg);
+		cleardevice();
+		int indi = ceil(j);
+      	putimage(0, 0, t[indi], COPY_PUT);
+      	j+=0.1;
+      	if(indi == 74/2){
+      		mciSendString("seek Corvo to start", NULL, 0, 0);
+   			mciSendString("play Corvo", NULL, 0, 0);
+		}
+      	setactivepage(pg);
+    }
+    mciSendString("stop Corvo", NULL, 0, 0);
+  	return 0; 
+}
+
+
 int animacao_porta()  { 
   	int pg, Porta, i, um = 1, xt = 0;
-  	//delay(4000);
   	void **t;                                         
   	t = (void **)malloc(sizeof(void *) * QtdCenas);  
   
@@ -846,6 +1024,7 @@ int animacao_porta()  {
 
 int Conclusao(Final final) {
 	int count = 0;
+	int pg = 1;
 	unsigned long long int ts1 = GetTickCount();
 	
 	mciSendString("stop Insetos", NULL, 0, 0);
@@ -921,6 +1100,7 @@ int comecaJogo(){
     char tecla = 0;
 	int camera_atual = 0;
 	int qtdCam = 0;
+	int pg = 1;
 	int LarTela,AltTela;
 	
 	bool mudou = false;
@@ -956,6 +1136,48 @@ int comecaJogo(){
 	
 	void* item1_img = load_image("dinamite.bmp",150,150,200,200);
 	void* item1_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item1_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item1_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item2_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item2_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item2_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item2_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item3_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item3_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item3_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item3_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item4_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item4_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item4_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item4_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item5_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item5_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item5_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item5_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item6_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item6_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item6_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item6_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item7_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item7_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item7_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item7_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item8_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item8_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item8_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item8_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	
+	void* item9_img = load_image("dinamite.bmp",150,150,200,200);
+	void* item9_mask = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item9_mini = load_image("dinamite_pb.bmp",150,150,200,200);
+	void* item9_mini_mask = load_image("dinamite_pb.bmp",150,150,200,200);
 	
 	Item *sinalizador = criar_item(0,"sinalizador",item1_img,item1_mask,200,200,50,50);
     Item *gasolina = criar_item(1,"gasolina",item1_img,item1_mask,300,200,50,50);
@@ -1209,7 +1431,7 @@ int comecaJogo(){
 }
 
 int Tutorial(){
-
+	int pg = 1;
 	int LarTela,AltTela;
 	
 	LarTela = 1280;
@@ -1323,13 +1545,21 @@ int Menu(){
 }
 
 int main() {
-	
+	int pg = 1;
 	int LarTela = 1280;
 	int AltTela = 720;
 	
+	mciSendString("open .\\Audios\\crow-sound.mp3 type MPEGVideo alias Corvo", NULL, 0, 0);
+	
 	setlocale(LC_ALL,"Portuguese");
 	initwindow(LarTela, AltTela,"meu jogo");
+	if(pg == 1) pg = 2; else pg = 1;
+	setvisualpage(pg);
+	cleardevice();
+	animacao_splash();
+	setactivepage(pg);
 	Menu();
+
  	closegraph();
 	return 0;
 }
