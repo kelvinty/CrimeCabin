@@ -1354,10 +1354,10 @@ int comecaJogo(){
 	append_vetor_finais(saida0->finais,final22);
 	append_vetor_finais(saida0->finais,final23);
 	
-	void *img_cam0 = load_image("quarto0.bmp",LarTela,AltTela,0,0);
-	void *img_cam1 = load_image("quarto1.bmp",LarTela,AltTela,0,0);
-	void *img_cam2 = load_image("quarto2.bmp",LarTela,AltTela,0,0);
-	void *img_cam3 = load_image("quarto3.bmp",LarTela,AltTela,0,0);
+	void *img_cam0 = load_image(".\\Itens\\camera\\cena1.BMP",LarTela,AltTela,0,0);
+	void *img_cam1 = load_image(".\\Itens\\camera\\cena2.BMP",LarTela,AltTela,0,0);
+	void *img_cam2 = load_image(".\\Itens\\camera\\cena3.BMP",LarTela,AltTela,0,0);
+	void *img_cam3 = load_image(".\\Itens\\camera\\cena4.BMP",LarTela,AltTela,0,0);
 	
 	TCamera *camera0 = criarCamera(0,img_cam0);
 	camera0->saida = saida0;
