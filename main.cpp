@@ -1147,13 +1147,13 @@ int comecaJogo(){
 	void* hud_inventario = load_image(".\\Hud\\Inventario.bmp",100,200,0,0);
 	
 	
-	void* item0_img = load_image("dinamite.bmp",100,100,0,0);
-	void* item0_mask = load_image("dinamite_pb.bmp",100,100,0,0);
-	void* item0_mini = load_image(".\\Itens\\inventario\\sinalizador.BMP",100,100,0,0);
-	void* item0_mini_mask = load_image(".\\Itens\\inventario\\sinalizadorWB.BMP",100,100,0,0);
+	void* item0_img = load_image(".\\Itens\\camera\\rede.BMP",1280,720,0,0);
+	void* item0_mask = load_image(".\\Itens\\camera\\Rede máscara.BMP",1280,720,0,0);
+	void* item0_mini = load_image(".\\Itens\\inventario\\rede.BMP",100,100,0,0);
+	void* item0_mini_mask = load_image(".\\Itens\\inventario\\Rede ícone máscara maior.BMP",100,100,0,0);
 	
-	void* item1_img = load_image("dinamite.bmp",100,100,0,0);
-	void* item1_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item1_img = load_image(".\\Itens\\camera\\gasolina.BMP",1280,720,0,0);
+	void* item1_mask = load_image(".\\Itens\\camera\\Gasolina máscara.BMP",1280,720,0,0);
 	void* item1_mini = load_image(".\\Itens\\inventario\\gasolina.BMP",100,100,0,0);
 	void* item1_mini_mask = load_image(".\\Itens\\inventario\\gasolinaWB.BMP",100,100,0,0);
 	
@@ -1162,30 +1162,30 @@ int comecaJogo(){
 	void* item2_mini = load_image(".\\Itens\\inventario\\fosforo.BMP",100,100,0,0);
 	void* item2_mini_mask = load_image(".\\Itens\\inventario\\fosforoWB.BMP",100,100,0,0);
 	
-	void* item3_img = load_image("dinamite.bmp",100,100,0,0);
-	void* item3_mask = load_image("dinamite_pb.bmp",100,100,0,0);
+	void* item3_img = load_image(".\\Itens\\camera\\armadilha.BMP",1280,720,0,0);
+	void* item3_mask = load_image(".\\Itens\\camera\\Armadilha máscara.BMP",1280,720,0,0);
 	void* item3_mini = load_image(".\\Itens\\inventario\\armadilha.BMP",100,100,0,0);
 	void* item3_mini_mask = load_image(".\\Itens\\inventario\\armadilhaWB.BMP",100,100,0,0);
 	
-	void* item4_img = load_image("dinamite.bmp",100,100,0,0);
-	void* item4_mask = load_image("dinamite_pb.bmp",100,100,0,0);
-	void* item4_mini = load_image(".\\Itens\\inventario\\machado.BMP",100,100,0,0);
-	void* item4_mini_mask = load_image(".\\Itens\\inventario\\machadoWB.BMP",100,100,0,0);
+	void* item4_img = load_image(".\\Itens\\camera\\Shotgun.BMP",1280,720,0,0);
+	void* item4_mask = load_image(".\\Itens\\camera\\Shotgun máscara2.BMP",1280,720,0,0);
+	void* item4_mini = load_image(".\\Itens\\inventario\\arma.BMP",100,100,0,0);
+	void* item4_mini_mask = load_image(".\\Itens\\inventario\\armaWB.BMP",100,100,0,0);
 	
 	void* item5_img = load_image("dinamite.bmp",100,100,0,0);
 	void* item5_mask = load_image("dinamite_pb.bmp",100,100,0,0);
 	void* item5_mini = load_image(".\\Itens\\inventario\\rede.BMP",100,100,0,0);
 	void* item5_mini_mask = load_image(".\\Itens\\inventario\\redeWB.BMP",100,100,0,0);
 	
-	void* item6_img = load_image("dinamite.bmp",100,100,0,0);
-	void* item6_mask = load_image("dinamite_pb.bmp",100,100,0,0);
-	void* item6_mini = load_image(".\\Itens\\inventario\\chave.BMP",100,100,0,0);
-	void* item6_mini_mask = load_image(".\\Itens\\inventario\\chaveWB.BMP",100,100,0,0);
+	void* item6_img = load_image(".\\Itens\\camera\\machado.BMP",1280,720,0,0);
+	void* item6_mask = load_image(".\\Itens\\camera\\Machado máscara.BMP",1280,720,0,0);
+	void* item6_mini = load_image(".\\Itens\\inventario\\machado.BMP",100,100,0,0);
+	void* item6_mini_mask = load_image(".\\Itens\\inventario\\machadoWB.BMP",100,100,0,0);
 	
-	void* item7_img = load_image(".\\Itens\\camera\\arma.BMP",1280,720,0,0);
-	void* item7_mask = load_image(".\\Itens\\camera\\armaWB.BMP",1280,720,0,0);
-	void* item7_mini = load_image(".\\Itens\\inventario\\arma.BMP",100,100,0,0);
-	void* item7_mini_mask = load_image(".\\Itens\\inventario\\armaWB.BMP",100,100,0,0);
+	void* item7_img = load_image(".\\Itens\\camera\\municao.BMP",1280,720,0,0);
+	void* item7_mask = load_image(".\\Itens\\camera\\Munição máscara.BMP",1280,720,0,0);
+	void* item7_mini = load_image(".\\Itens\\inventario\\municao.BMP",100,100,0,0);
+	void* item7_mini_mask = load_image(".\\Itens\\inventario\\municaoWB.BMP",100,100,0,0);
 	
 	void* item8_img = load_image("dinamite.bmp",100,100,0,0);
 	void* item8_mask = load_image("dinamite_pb.bmp",100,100,0,0);
@@ -1354,10 +1354,17 @@ int comecaJogo(){
 	append_vetor_finais(saida0->finais,final22);
 	append_vetor_finais(saida0->finais,final23);
 	
+<<<<<<< HEAD
 	void *img_cam0 = load_image(".\\Itens\\camera\\cena1.BMP",LarTela,AltTela,0,0);
 	void *img_cam1 = load_image(".\\Itens\\camera\\cena2.BMP",LarTela,AltTela,0,0);
 	void *img_cam2 = load_image(".\\Itens\\camera\\cena3.BMP",LarTela,AltTela,0,0);
 	void *img_cam3 = load_image(".\\Itens\\camera\\cena4.BMP",LarTela,AltTela,0,0);
+=======
+	void *img_cam0 = load_image(".\\Itens\\camera\\cena1.bmp",LarTela,AltTela,0,0);
+	void *img_cam1 = load_image(".\\Itens\\camera\\cena2.bmp",LarTela,AltTela,0,0);
+	void *img_cam2 = load_image(".\\Itens\\camera\\cena3.bmp",LarTela,AltTela,0,0);
+	void *img_cam3 = load_image(".\\Itens\\camera\\cena4.bmp",LarTela,AltTela,0,0);
+>>>>>>> 1badd49bbc172c5d5f1e8aaa5b7cb93a7320876d
 	
 	TCamera *camera0 = criarCamera(0,img_cam0);
 	camera0->saida = saida0;
@@ -1567,7 +1574,7 @@ int main() {
 	if(pg == 1) pg = 2; else pg = 1;
 	setvisualpage(pg);
 	cleardevice();
-  	animacao_splash();
+  	//animacao_splash();
 	setactivepage(pg);
 	Menu();
 
