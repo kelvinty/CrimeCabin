@@ -1403,7 +1403,6 @@ int comecaJogo(){
 			
  			setactivepage(pg);
 		}
-		
 	}
 	
 	deleteImage(img_cam0);
