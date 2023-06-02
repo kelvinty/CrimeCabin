@@ -1545,7 +1545,7 @@ int main() {
 	mciSendString("open .\\Audios\\crow-sound.mp3 type MPEGVideo alias Corvo", NULL, 0, 0);
 	
 	setlocale(LC_ALL,"Portuguese");
-	initwindow(LarTela, AltTela,"meu jogo");
+	initwindow(LarTela, AltTela,"Crime Cabin");
 	if(pg == 1) pg = 2; else pg = 1;
 	setvisualpage(pg);
 	cleardevice();
