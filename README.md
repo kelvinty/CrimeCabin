@@ -1,6 +1,7 @@
 # Jogo Point-and-Click de Terror: "Crime Cabin"
 
 ![image](https://github.com/kelvinty/HorrorHut/assets/46994966/8388a768-5e09-485c-b4c7-4f016d4de29f)
+![image](https://github.com/kelvinty/HorrorHut/assets/46994966/ed4972f8-f7d7-41b8-a919-8bf15719c95b)
 
 
 ## Visão Geral
