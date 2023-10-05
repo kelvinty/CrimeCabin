@@ -1,4 +1,8 @@
 # Jogo Point-and-Click de Terror: "Crime Cabin"
+
+![image](https://github.com/kelvinty/HorrorHut/assets/46994966/8388a768-5e09-485c-b4c7-4f016d4de29f)
+
+
 ## Visão Geral
 Bem-vindo ao "Crime Cabin", um emocionante jogo point-and-click de terror onde você se encontra preso em uma cabana isolada no meio da floresta, perseguido por um assassino sádico. Sua missão é sobreviver e escapar a todo custo enquanto enfrenta enigmas, armadilhas e decisões mortais.
 
