@@ -41,7 +41,7 @@ Desenvolvido por ## LUNAR CROW STUDIO
 - Renan Antônio
   
 #### Programador Principal
-- Kelvin Conego Tyszczenko (https://github.com/kelvinty) - [@kelvinty](https://github.com/kelvinty)
+- Kelvin Conego Tyszczenko - [@kelvinty](https://github.com/kelvinty)
 
 #### Artista Gráfico
 - Renan Antônio
