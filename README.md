@@ -25,7 +25,7 @@ Assista ao Assassino: Esteja atento às pistas visuais e sonoras que indicam a p
 Faça Escolhas Inteligentes: Suas decisões podem afetar o resultado do jogo.
 
 ## Créditos
-### Desenvolvido por ## LUNAR CROW STUDIO
+### Desenvolvido por **LUNAR CROW STUDIO**
 #### Designer de Jogo
 - Kelvin Conego Tyszczenko - [@kelvinty](https://github.com/kelvinty)
 - João Vcitor - [@JVN2002](https://github.com/JVN2002)
