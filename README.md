@@ -34,6 +34,20 @@ Faça Escolhas Inteligentes: Suas decisões podem afetar o resultado do jogo.
 
 Desenvolvido por [LUNAR CROW STUDIO]
 
+#### Designer de Jogo
+- [Kelvin Conego Tyszczenko] - [@kelvinty](https://github.com/kelvinty)
+- [Kelvin Conego Tyszczenko] - [@kelvinty](https://github.com/kelvinty)
+- 
+#### Programador Principal
+- [Seu Nome](https://github.com/seunome) - [@seunome](https://github.com/seunome)
+
+#### Artista Gráfico
+- [Nome do Artista](https://github.com/nomeartista) - [@nomeartista](https://github.com/nomeartista)
+
+### Música e Trilha Sonora
+- Composta por [Nome do Compositor](https://github.com/nomecompositor) - [@nomecompositor](https://github.com/nomecompositor)
+
+
 Designer de Jogo: [RENAN ANTÔNIO, IGOR MENDES, JOÃO VICTOR, KELVIN CONEGO TYSZCZENKO]
 Programador Principal: [KELVIN CONEGO TYSZCZENKO]
 Artista Gráfico: [RENAN ANTÔNIO, IGOR MENDES, JOÃO VICTOR]
