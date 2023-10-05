@@ -30,39 +30,33 @@ Resolva Enigmas: Alguns enigmas podem revelar a chave para escapar da cabana.
 Assista ao Assassino: Esteja atento às pistas visuais e sonoras que indicam a presença do assassino.
 Faça Escolhas Inteligentes: Suas decisões podem afetar o resultado do jogo.
 
-# Créditos
+## Créditos
 
-Desenvolvido por [LUNAR CROW STUDIO]
+Desenvolvido por ## LUNAR CROW STUDIO
 
 #### Designer de Jogo
-- [Kelvin Conego Tyszczenko] - [@kelvinty](https://github.com/kelvinty)
-- [Kelvin Conego Tyszczenko] - [@kelvinty](https://github.com/kelvinty)
-- 
+- Kelvin Conego Tyszczenko - [@kelvinty](https://github.com/kelvinty)
+- João Vcitor - [@JVN2002](https://github.com/JVN2002)
+- Igor Mendes 
+- Renan Antônio
+  
 #### Programador Principal
-- [Seu Nome](https://github.com/seunome) - [@seunome](https://github.com/seunome)
+- Kelvin Conego Tyszczenko (https://github.com/kelvinty) - [@kelvinty](https://github.com/kelvinty)
 
 #### Artista Gráfico
-- [Nome do Artista](https://github.com/nomeartista) - [@nomeartista](https://github.com/nomeartista)
+- Renan Antônio
+- Igor Mendes 
+- João Vcitor - [@JVN2002](https://github.com/JVN2002)
 
 ### Música e Trilha Sonora
-- Composta por [Nome do Compositor](https://github.com/nomecompositor) - [@nomecompositor](https://github.com/nomecompositor)
+- João Vcitor - [@JVN2002](https://github.com/JVN2002)
 
-
-Designer de Jogo: [RENAN ANTÔNIO, IGOR MENDES, JOÃO VICTOR, KELVIN CONEGO TYSZCZENKO]
-Programador Principal: [KELVIN CONEGO TYSZCZENKO]
-Artista Gráfico: [RENAN ANTÔNIO, IGOR MENDES, JOÃO VICTOR]
-Compositor de Trilha Sonora: [JOÃO VICTOR]
-
-# Contato
-
-Suporte: kelvin.conego@hotmail.com
-
-# Avisos Legais
+## Avisos Legais
 
 "Crime Cabin" é um trabalho fictício e não representa nenhum produto real.
 Todos os direitos autorais e marcas registradas são propriedade de seus respectivos proprietários.
 
-# Termos de Uso
+### Termos de Uso
 Ao jogar "Crime Cabin", você concorda com os termos e condições estabelecidos no contrato de licença do usuário final (EULA) incluído no jogo.
 
-Divirta-se e boa sorte escapando da Cabana!
+**Divirta-se e boa sorte escapando da Cabana Sombria!**
