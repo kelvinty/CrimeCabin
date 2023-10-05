@@ -40,7 +40,7 @@ Faça Escolhas Inteligentes: Suas decisões podem afetar o resultado do jogo.
 - Igor Mendes 
 - João Vcitor - [@JVN2002](https://github.com/JVN2002)
 
-### Música e Trilha Sonora
+#### Música e Trilha Sonora
 - João Vcitor - [@JVN2002](https://github.com/JVN2002)
 
 ## Avisos Legais
